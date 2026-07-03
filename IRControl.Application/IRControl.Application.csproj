@@ -11,4 +11,10 @@
     <ProjectReference Include="..\IRControl.Infrastructure\IRControl.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Business\Auditoria\Rules\Conferencia\" />
+    <Folder Include="Business\Auditoria\Rules\Dependentes\" />
+    <Folder Include="Business\Auditoria\Rules\DespesasMedicas\" />
+  </ItemGroup>
+
 </Project>

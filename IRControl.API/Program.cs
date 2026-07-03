@@ -1,3 +1,9 @@
+using IRControl.Application.Business.Auditoria.Interfaces;
+using IRControl.Application.Business.Auditoria.Rules.Holerites;
+using IRControl.Application.Business.Auditoria.Rules.Informes;
+using IRControl.Application.Business.Auditoria.Services;
+using IRControl.Application.Business.Declaracao.Interfaces;
+using IRControl.Application.Business.Declaracao.Services;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Services;
 using IRControl.Infrastructure.Persistence;
@@ -22,6 +28,24 @@ builder.Services.AddScoped<IDependenteService, DependenteService>();
 builder.Services.AddScoped<IDespesaMedicaService, DespesaMedicaService>();
 builder.Services.AddScoped<IInformeRendimentoService, InformeRendimentoService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ISituacaoDeclaracaoService,SituacaoDeclaracaoService>();
+
+builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
+
+#region Holetite Rules
+builder.Services.AddScoped<IAuditoriaRule, HoleriteCompletoRule>();
+builder.Services.AddScoped<IAuditoriaRule, HoleriteDuplicadoRule>();
+builder.Services.AddScoped<IAuditoriaRule, HoleriteValorNegativoRule>();
+builder.Services.AddScoped<IAuditoriaRule, HoleriteSalarioZeroRule>();
+builder.Services.AddScoped<IAuditoriaRule, MesInvalidoRule>();
+#endregion
+#region informe Rules
+
+builder.Services.AddScoped<IAuditoriaRule, InformeExisteRule>();
+builder.Services.AddScoped<IAuditoriaRule, InformeDuplicadoRule>();
+
+#endregion 
+
 
 var app = builder.Build();
 
