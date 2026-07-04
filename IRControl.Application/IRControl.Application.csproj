@@ -12,9 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Business\Auditoria\Rules\Conferencia\" />
-    <Folder Include="Business\Auditoria\Rules\Dependentes\" />
-    <Folder Include="Business\Auditoria\Rules\DespesasMedicas\" />
+    <Folder Include="Business\Auditoria\Base\" />
+    <Folder Include="Business\Auditoria\Constants\" />
   </ItemGroup>
 
 </Project>

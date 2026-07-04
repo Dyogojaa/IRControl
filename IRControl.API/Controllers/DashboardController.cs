@@ -1,4 +1,4 @@
-﻿using IRControl.Application.Interfaces;
+﻿using IRControl.Application.Business.Dashboard.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IRControl.API.Controllers;
@@ -7,19 +7,28 @@ namespace IRControl.API.Controllers;
 [Route("api/[controller]")]
 public class DashboardController : ControllerBase
 {
-    private readonly IDashboardService _service;
+    private readonly IDashboardService _dashboardService;
 
     public DashboardController(
-        IDashboardService service)
+        IDashboardService dashboardService)
     {
-        _service = service;
+        _dashboardService = dashboardService;
     }
 
+    /// <summary>
+    /// Retorna o Dashboard do ano informado.
+    /// </summary>
     [HttpGet("{ano:int}")]
-    public async Task<IActionResult> Get(int ano)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Obter(int ano)
     {
-        var resultado = await _service.ObterAsync(ano);
+        if (ano < 1900 || ano > DateTime.Now.Year + 1)
+            return BadRequest("Ano inválido.");
 
-        return Ok(resultado);
+        var dashboard =
+            await _dashboardService.ObterDashboardAsync(ano);
+
+        return Ok(dashboard);
     }
 }
