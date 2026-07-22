@@ -18,6 +18,18 @@ export const theme = createTheme({
         },
     },
 
+    // ADICIONE ESTE BLOCO
+    components: {
+        MuiDrawer: {
+            styleOverrides: {
+                paper: {
+                    backgroundColor: "#E8F5E9",
+                    borderRight: "1px solid #C8E6C9",
+                },
+            },
+        },
+    },
+
     shape: {
         borderRadius: 12,
     },

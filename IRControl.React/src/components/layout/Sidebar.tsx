@@ -26,10 +26,13 @@ function Sidebar() {
 
                 "& .MuiDrawer-paper": {
                     width: DRAWER_WIDTH,
-                    border: 0,
-                    bgcolor: "secondary.main",
-                    color: "#FFF",
                     boxSizing: "border-box",
+                    border: 0,
+
+                    bgcolor: "#2E7D32",
+                    color: "#FFFFFF",
+
+                    borderRight: "1px solid #1B5E20",
                 },
             }}
         >
@@ -37,12 +40,11 @@ function Sidebar() {
 
             <Divider
                 sx={{
-                    borderColor: "rgba(255,255,255,.08)",
+                    borderColor: "rgba(255,255,255,.12)",
                 }}
             />
 
             <List sx={{ mt: 1 }}>
-
                 <MenuItem
                     text="Dashboard"
                     icon={<DashboardRoundedIcon />}
@@ -78,27 +80,23 @@ function Sidebar() {
                     icon={<FactCheckRoundedIcon />}
                     path="/auditoria"
                 />
-
             </List>
 
             <Box sx={{ flexGrow: 1 }} />
 
             <Divider
                 sx={{
-                    borderColor: "rgba(255,255,255,.08)",
+                    borderColor: "rgba(255,255,255,.12)",
                 }}
             />
 
             <List>
-
                 <MenuItem
                     text="Configurações"
                     icon={<SettingsRoundedIcon />}
                     path="/configuracoes"
                 />
-
             </List>
-
         </Drawer>
     );
 }
