@@ -1,51 +1,158 @@
 import Grid from "@mui/material/Grid";
-import DescriptionIcon from "@mui/icons-material/Description";
-import PeopleIcon from "@mui/icons-material/People";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-import DashboardCard from "./DashboardCard";
+import type { DashboardResponse } from "@/types/dashboard";
 
-function DashboardGrid() {
+interface DashboardGridProps {
+    dashboard: DashboardResponse;
+}
+
+export default function DashboardGrid({
+    dashboard,
+}: DashboardGridProps) {
+
     return (
-        <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <DashboardCard
-                    title="Holerites"
-                    value={12}
-                    subtitle="Importados"
-                    icon={<DescriptionIcon fontSize="inherit" />}
-                />
+        <Grid
+            container
+            spacing={3}
+        >
+            <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                    sx={{
+                        p: 3,
+                        borderRadius: 3,
+                        height: 250,
+                    }}
+                >
+                    <Typography variant="h6">
+                        Holerites
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                    >
+                        Total cadastrados:
+                    </Typography>
+
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 700,
+                            mt: 2,
+                        }}
+                    >
+                        {dashboard.holerites.cadastrados}
+                    </Typography>
+                </Paper>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <DashboardCard
-                    title="Dependentes"
-                    value={3}
-                    subtitle="Cadastrados"
-                    icon={<PeopleIcon fontSize="inherit" />}
-                />
+            <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                    sx={{
+                        p: 3,
+                        borderRadius: 3,
+                        height: 250,
+                    }}
+                >
+                    <Typography variant="h6">
+                        Dependentes
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                    >
+                        Pessoas cadastradas
+                    </Typography>
+
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 700,
+                            mt: 2,
+                        }}
+                    >
+                        {dashboard.dependentes.quantidade}
+                    </Typography>
+                </Paper>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <DashboardCard
-                    title="Despesas"
-                    value={15}
-                    subtitle="Lançadas"
-                    icon={<MedicalServicesIcon fontSize="inherit" />}
-                />
+            <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                    sx={{
+                        p: 3,
+                        borderRadius: 3,
+                        height: 250,
+                    }}
+                >
+                    <Typography variant="h6">
+                        Despesas Médicas
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                    >
+                        Total informado
+                    </Typography>
+
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 700,
+                            mt: 2,
+                        }}
+                    >
+                        {dashboard.despesasMedicas.quantidade}
+                    </Typography>
+                </Paper>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <DashboardCard
-                    title="Declaração"
-                    value="2026"
-                    subtitle="Exercício"
-                    icon={<AssessmentIcon fontSize="inherit" />}
-                />
+            <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                    sx={{
+                        p: 3,
+                        borderRadius: 3,
+                        height: 250,
+                    }}
+                >
+                    <Typography variant="h6">
+                        Auditoria
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            mt: 4,
+                        }}
+                    >
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                fontWeight: 700,
+                                color: dashboard.auditoria.declaracaoApta
+                                    ? "success.main"
+                                    : "warning.main",
+                            }}
+                        >
+                            {dashboard.auditoria.declaracaoApta
+                                ? "Declaração Apta"
+                                : "Pendências"}
+                        </Typography>
+
+                        <Typography
+                            color="text.secondary"
+                            sx={{ mt: 2 }}
+                        >
+                            {dashboard.auditoria.declaracaoApta
+                                ? "Nenhuma inconsistência encontrada."
+                                : "Existem itens aguardando análise."}
+                        </Typography>
+                    </Box>
+                </Paper>
             </Grid>
         </Grid>
     );
 }
-
-export default DashboardGrid;

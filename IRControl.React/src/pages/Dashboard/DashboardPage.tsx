@@ -1,25 +1,36 @@
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
-import SummaryCard from "@/components/dashboard/SummaryCard";
+import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
+import DashboardSummary from "@/components/dashboard/summary/DashboardSummary";
+import DashboardGrid from "@/components/dashboard/DashboardGrid";
+
 import { useDashboard } from "@/hooks/useDashboard";
 
-function DashboardPage() {
+export default function DashboardPage() {
     const { dashboard, loading, error } = useDashboard(2026);
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 6,
+                }}
+            >
                 <CircularProgress />
             </Box>
         );
     }
 
     if (error) {
-        return <Alert severity="error">{error}</Alert>;
+        return (
+            <Alert severity="error">
+                {error}
+            </Alert>
+        );
     }
 
     if (!dashboard) {
@@ -28,44 +39,15 @@ function DashboardPage() {
 
     return (
         <>
-            <Typography
-                variant="h4"
-                sx={{ mb: 4 }}
-            >
-                Dashboard
-            </Typography>
+            <DashboardHeader />
 
-            <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 3 }}>
-                    <SummaryCard
-                        title="Holerites"
-                        value={dashboard.holerites.cadastrados}
-                    />
-                </Grid>
+            <DashboardSummary
+                dashboard={dashboard}
+            />
 
-                <Grid size={{ xs: 12, md: 3 }}>
-                    <SummaryCard
-                        title="Dependentes"
-                        value={dashboard.dependentes.quantidade}
-                    />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 3 }}>
-                    <SummaryCard
-                        title="Despesas Médicas"
-                        value={dashboard.despesasMedicas.quantidade}
-                    />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 3 }}>
-                    <SummaryCard
-                        title="Auditoria"
-                        value={dashboard.auditoria.declaracaoApta ? "OK" : "Pendente"}
-                    />
-                </Grid>
-            </Grid>
+            <DashboardGrid
+                dashboard={dashboard}
+            />
         </>
     );
 }
-
-export default DashboardPage;

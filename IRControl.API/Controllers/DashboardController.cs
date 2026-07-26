@@ -31,4 +31,11 @@ public class DashboardController : ControllerBase
 
         return Ok(dashboard);
     }
+
+    [HttpGet("teste")]
+    public IActionResult Teste()
+    {
+        throw new Exception("Teste do Middleware");
+    }
 }
+

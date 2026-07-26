@@ -45,7 +45,7 @@ public class HoleriteService : IHoleriteService
             SalarioBruto = request.SalarioBruto,
             Inss = request.Inss,
             Irrf = request.Irrf,
-            SalarioLiquido = request.SalarioLiquido,
+            SalarioLiquido = CalcularSalarioLiquido(request),
             PlanoSaude = request.PlanoSaude,
             PrevidenciaPrivada = request.PrevidenciaPrivada,
             OutrosDescontos = request.OutrosDescontos,
@@ -87,7 +87,7 @@ public class HoleriteService : IHoleriteService
         holerite.SalarioBruto = request.SalarioBruto;
         holerite.Inss = request.Inss;
         holerite.Irrf = request.Irrf;
-        holerite.SalarioLiquido = request.SalarioLiquido;
+        holerite.SalarioLiquido = CalcularSalarioLiquido(request);
         holerite.PlanoSaude = request.PlanoSaude;
         holerite.PrevidenciaPrivada = request.PrevidenciaPrivada;
         holerite.OutrosDescontos = request.OutrosDescontos;
@@ -95,5 +95,18 @@ public class HoleriteService : IHoleriteService
         await _context.SaveChangesAsync();
 
         return holerite.ToResponse();
+    }
+
+
+    private static decimal CalcularSalarioLiquido(CreateHoleriteRequest request)
+    {
+#pragma warning disable CS8629 // O tipo de valor de nulidade pode ser nulo.
+        return (decimal)(request.SalarioBruto
+             - request.Inss
+             - request.Irrf
+             - request.PlanoSaude
+             - request.PrevidenciaPrivada
+             - request.OutrosDescontos);
+#pragma warning restore CS8629 // O tipo de valor de nulidade pode ser nulo.
     }
 }
