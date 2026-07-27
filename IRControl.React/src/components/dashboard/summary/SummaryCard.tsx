@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,9 +10,10 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 export interface SummaryCardProps {
     title: string;
-    value: string;
-    subtitle?: string;
-    icon?: React.ReactNode;
+    value: ReactNode;
+    subtitle?: ReactNode;
+    icon?: ReactNode;
+    color?: "primary" | "success" | "warning" | "error" | "info";
 }
 
 export default function SummaryCard({
@@ -18,6 +21,7 @@ export default function SummaryCard({
     value,
     subtitle,
     icon,
+    color = "primary",
 }: SummaryCardProps) {
 
     return (
@@ -39,7 +43,7 @@ export default function SummaryCard({
             <Box
                 sx={{
                     height: 5,
-                    bgcolor: "primary.main",
+                    bgcolor: `${color}.main`,
                 }}
             />
 
@@ -62,7 +66,7 @@ export default function SummaryCard({
 
                     <Box
                         sx={{
-                            color: "primary.main",
+                            color: `${color}.main`,
                             display: "flex",
                             alignItems: "center",
                         }}
