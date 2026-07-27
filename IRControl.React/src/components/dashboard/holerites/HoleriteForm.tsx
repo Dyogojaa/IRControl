@@ -6,9 +6,13 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SectionCard from "@/components/common/finance/SectionCard";
 
+
 import type {
     HoleriteFormProps,
 } from "./HoleriteForm.types";
+import { meses } from "@/config/meses";
+import MenuItem from "@mui/material/MenuItem";
+import CurrencyField from "@/components/common/form/CurrencyField";
 
 export default function HoleriteForm({
     mode,
@@ -33,13 +37,13 @@ export default function HoleriteForm({
     return (
 
           <Box
-    sx={{
-        display: "flex",
-        flexDirection: "column",
-          backgroundColor: "grey.100",
-        gap: 3,
-        mt: 1,
-    }}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                bgcolor: "action.hover",
+                gap: 2.5,
+                mt: 0,
+            }}
 >
 
             <SectionCard
@@ -48,11 +52,11 @@ export default function HoleriteForm({
             >
                 <Grid container spacing={2}>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
+                            select
                             fullWidth
                             label="Mês"
-                            type="number"
                             value={value.mes}
                             disabled={readOnly}
                             onChange={(e) =>
@@ -61,16 +65,30 @@ export default function HoleriteForm({
                                     Number(e.target.value)
                                 )
                             }
-                        />
+                        >
+                            {meses.map((mes) => (
+                                <MenuItem
+                                    key={mes.value}
+                                    value={mes.value}
+                                >
+                                    {mes.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 2 }}>
                         <TextField
                             fullWidth
-                            label="Ano"
+                            label="Ano"                            
                             type="number"
                             value={value.ano}
                             disabled={readOnly}
+                            sx={{
+                                "& input": {
+                                    textAlign: "right",
+                                },
+                            }}
                             onChange={(e) =>
                                 update(
                                     "ano",
@@ -90,19 +108,14 @@ export default function HoleriteForm({
                 <Grid container spacing={2}>
 
                     <Grid size={{ xs: 12 }}>
-                        <TextField
-                            fullWidth
-                            label="Salário Bruto"
-                            type="number"
-                            value={value.salarioBruto}
-                            disabled={readOnly}
-                            onChange={(e) =>
-                                update(
-                                    "salarioBruto",
-                                    Number(e.target.value)
-                                )
-                            }
-                        />
+                        <CurrencyField
+                        label="Salário Bruto"
+                        value={value.salarioBruto}
+                        disabled={readOnly}
+                        onChange={(value) =>
+                            update("salarioBruto", value)
+                        }
+                    />
                     </Grid>
 
                 </Grid>
@@ -115,81 +128,54 @@ export default function HoleriteForm({
             <Grid container spacing={2}>
 
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
-                        fullWidth
+                    <CurrencyField
                         label="INSS"
-                        type="number"
                         value={value.inss}
                         disabled={readOnly}
-                        onChange={(e) =>
-                            update(
-                                "inss",
-                                Number(e.target.value)
-                            )
-                        }
+                        onChange={(value) => update("inss", value)}
                     />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
-                        fullWidth
+                    <CurrencyField
                         label="IRRF"
-                        type="number"
                         value={value.irrf}
                         disabled={readOnly}
-                        onChange={(e) =>
-                            update(
-                                "irrf",
-                                Number(e.target.value)
-                            )
+                        onChange={(value) =>
+                            update("irrf", value)
                         }
                     />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
-                        fullWidth
+                    <CurrencyField
                         label="Plano de Saúde"
-                        type="number"
                         value={value.planoSaude}
                         disabled={readOnly}
-                        onChange={(e) =>
-                            update(
-                                "planoSaude",
-                                Number(e.target.value)
-                            )
+                        onChange={(value) =>
+                            update("planoSaude", value)
                         }
                     />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
-                        fullWidth
+                    <CurrencyField
                         label="Previdência Privada"
-                        type="number"
                         value={value.previdenciaPrivada}
                         disabled={readOnly}
-                        onChange={(e) =>
-                            update(
-                                "previdenciaPrivada",
-                                Number(e.target.value)
-                            )
+                        onChange={(value) =>
+                            update("previdenciaPrivada", value)
                         }
                     />
                 </Grid>
 
                 <Grid size={{ xs: 12 }}>
-                    <TextField
-                        fullWidth
+                    <CurrencyField
                         label="Outros Descontos"
-                        type="number"
                         value={value.outrosDescontos}
                         disabled={readOnly}
-                        onChange={(e) =>
-                            update(
-                                "outrosDescontos",
-                                Number(e.target.value)
-                            )
+                        onChange={(value) =>
+                            update("outrosDescontos", value)
                         }
                     />
                 </Grid>

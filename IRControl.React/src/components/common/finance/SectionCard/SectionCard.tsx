@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
@@ -12,14 +11,19 @@ export default function SectionCard({
     children,
 }: SectionCardProps) {
 
+    // TODO: Implementar suporte ao modo collapsible.
+    void collapsible;
+
     return (
 
         <Paper
-            elevation={2}
+            elevation={1}
             sx={{
+                width: "100%",
                 borderRadius: 3,
                 overflow: "hidden",
-                mb: 3,
+                bgcolor: "background.paper",
+                transition: "all .2s ease",
             }}
         >
 
@@ -27,19 +31,48 @@ export default function SectionCard({
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
+                    gap: 1.5,
+
                     px: 3,
-                    py: 2,
-                    bgcolor: "grey.100",
+                    py: 1.75,
+
+                    minHeight: 60,
+
+                    bgcolor: "grey.50",
+
+                    borderBottom: 1,
+                    borderColor: "divider",
                 }}
             >
 
-                {icon}
+                {icon && (
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+
+                            color: "text.secondary",
+
+                            "& svg": {
+                                fontSize: 28,
+                            },
+                        }}
+                    >
+                        {icon}
+                    </Box>
+
+                )}
 
                 <Typography
                     variant="h6"
                     sx={{
-                        fontWeight: 600,
+                        flex: 1,
+                        fontWeight: 700,
+                        fontSize: "1.25rem",
+                        color: "text.primary",
+                        letterSpacing: ".2px",
                     }}
                 >
                     {title}
@@ -47,11 +80,11 @@ export default function SectionCard({
 
             </Box>
 
-            <Divider />
-
             <Box
                 sx={{
-                    p: 3,
+                    px: 3,
+                    py: 2.5,
+                    width: "100%",
                 }}
             >
 

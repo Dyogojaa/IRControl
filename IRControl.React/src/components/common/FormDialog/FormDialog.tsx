@@ -1,3 +1,7 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
+
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
@@ -39,11 +43,29 @@ export default function FormDialog({
 
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions
+                sx={{
+                    px: 3,
+                    py: 2,
+                    borderTop: 1,
+                    borderColor: "divider",
+                    gap: 1.5,
+                }}
+            >
 
                 <Button
+                    variant="outlined"
+                    color="inherit"
                     onClick={onClose}
                     disabled={loading}
+                    startIcon={
+                        isView
+                            ? <CloseIcon />
+                            : <ArrowBackIcon />
+                    }
+                    sx={{
+                        minWidth: 130,
+                    }}
                 >
                     {isView
                         ? "Fechar"
@@ -56,10 +78,23 @@ export default function FormDialog({
                         variant="contained"
                         onClick={onSave}
                         disabled={loading}
+                        startIcon={
+                            !loading
+                                ? <SaveIcon />
+                                : undefined
+                        }
+                        sx={{
+                            minWidth: 130,
+                        }}
                     >
-                        {loading
-                            ? <CircularProgress size={20} />
-                            : "Salvar"}
+                        {loading ? (
+                            <CircularProgress
+                                size={20}
+                                color="inherit"
+                            />
+                        ) : (
+                            "Salvar"
+                        )}
                     </Button>
 
                 )}
