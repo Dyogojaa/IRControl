@@ -1,5 +1,6 @@
 ﻿using IRControl.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 
 namespace IRControl.Infrastructure.Persistence;
 
@@ -19,26 +20,49 @@ public static class SeedData
     {
         await context.Database.MigrateAsync();
 
-        if (await PossuiDadosAsync(context))
+        await SeedUsuariosAsync(context);
+
+        if (!await PossuiDadosAsync(context))
+        {
+            var agora = DateTime.UtcNow;
+
+            var dependentes = CriarDependentes(agora);
+
+            await context.Dependentes.AddRangeAsync(dependentes);
+
+            var holerites = CriarHolerites(agora);
+            await context.Holerites.AddRangeAsync(holerites);
+
+            var informe = CriarInforme(agora);
+            await context.InformesRendimento.AddAsync(informe);
+
+            await context.SaveChangesAsync();
+
+            var despesas = CriarDespesas(dependentes, agora);
+
+            await context.DespesasMedicas.AddRangeAsync(despesas);
+
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedUsuariosAsync(AppDbContext context)
+    {
+        if (await context.Usuarios.AnyAsync())
             return;
 
-        var agora = DateTime.UtcNow;
+        var usuario = new Usuario
+        {
+            Id = Guid.NewGuid(),
+            Nome = "Administrador",
+            Login = "admin",
+            Email = "admin@ircontrol.local",
+            SenhaHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            Ativo = true,
+            DataCriacao = DateTime.UtcNow
+        };
 
-        var dependentes = CriarDependentes(agora);
-
-        await context.Dependentes.AddRangeAsync(dependentes);
-
-        var holerites = CriarHolerites(agora);
-        await context.Holerites.AddRangeAsync(holerites);
-
-        var informe = CriarInforme(agora);
-        await context.InformesRendimento.AddAsync(informe);
-
-        await context.SaveChangesAsync();
-
-        var despesas = CriarDespesas(dependentes, agora);
-
-        await context.DespesasMedicas.AddRangeAsync(despesas);
+        await context.Usuarios.AddAsync(usuario);
 
         await context.SaveChangesAsync();
     }

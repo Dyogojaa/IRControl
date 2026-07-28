@@ -1,6 +1,6 @@
 import Typography from "@mui/material/Typography";
 
-import DashboardPanel from "../DashboardPanel";
+import DashboardPanel from "../panels/DashboardPanel";
 
 interface HoleritesPanelProps {
     cadastrados: number;

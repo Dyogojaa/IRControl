@@ -20,6 +20,9 @@ export default function DashboardPanel({
             elevation={0}
             sx={{
                 height: "100%",
+                display: "flex",
+                flexDirection: "column",
+
                 borderRadius: 3,
                 border: "1px solid",
                 borderColor: "divider",
@@ -32,6 +35,7 @@ export default function DashboardPanel({
                 },
             }}
         >
+
             <Box sx={{ mb: 3 }}>
 
                 <Typography
@@ -54,7 +58,15 @@ export default function DashboardPanel({
 
             </Box>
 
-            {children}
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1,
+                }}
+            >
+                {children}
+            </Box>
 
         </Paper>
     );

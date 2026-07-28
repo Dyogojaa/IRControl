@@ -12,10 +12,16 @@ using IRControl.Application.Business.Declaracao.Interfaces;
 using IRControl.Application.Business.Declaracao.Services;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Services;
+using IRControl.Infrastructure.Authentication.Interfaces;
+using IRControl.Infrastructure.Authentication.Models;
+using IRControl.Infrastructure.Authentication.Security;
+using IRControl.Infrastructure.Authentication.Services;
 using IRControl.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +52,42 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
 
+#endregion
+
+#region Servicos JWT    
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection(JwtSettings.SectionName));
+
+
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwt = builder.Configuration
+            .GetSection(JwtSettings.SectionName)
+            .Get<JwtSettings>()!;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwt.Issuer,
+            ValidAudience = jwt.Audience,
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwt.Key))
+        };
+    });
+
+builder.Services.AddAuthorization();
 #endregion
 
 #region Swagger
@@ -90,6 +132,7 @@ builder.Services.AddScoped<IInformeRendimentoService, InformeRendimentoService>(
 builder.Services.AddScoped<ISituacaoDeclaracaoService, SituacaoDeclaracaoService>();
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 #endregion
 
@@ -144,6 +187,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("ReactPolicy");
 app.UseGlobalExceptionHandler();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

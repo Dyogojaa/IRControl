@@ -33,11 +33,9 @@ export default function AuditoriaToolbar({
         <Box
             sx={{
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
-                mb: 3,
                 gap: 2,
-                flexWrap: "wrap",
+                mb: 3,
             }}
         >
 
@@ -46,7 +44,7 @@ export default function AuditoriaToolbar({
                 type="number"
                 value={ano}
                 onChange={(e) => onAnoChange(Number(e.target.value))}
-                sx={{ width: 140 }}
+                sx={{ width: 120 }}
             />
 
             <Button
