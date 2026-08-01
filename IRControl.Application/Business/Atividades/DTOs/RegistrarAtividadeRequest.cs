@@ -16,5 +16,10 @@ namespace IRControl.Application.Business.Atividades.DTOs
         public string Titulo { get; set; } = string.Empty;
 
         public string Descricao { get; set; } = string.Empty;
+
+        public Guid? UsuarioId { get; set; }
+
+        public string? UsuarioLogin { get; set; }
+
     }
 }

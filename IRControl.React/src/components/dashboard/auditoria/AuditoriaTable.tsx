@@ -56,7 +56,7 @@ export default function AuditoriaTable({
         },
 
         {
-            field: "Dyogo",
+            field: "descricao",
             headerName: "Descrição",
             flex: 1,
             minWidth: 500,

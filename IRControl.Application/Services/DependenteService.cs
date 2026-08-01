@@ -1,8 +1,11 @@
-﻿using IRControl.Application.DTOs.Requests;
+﻿using IRControl.Application.Business.Atividades.Interface;
+using IRControl.Application.Common.Constants;
+using IRControl.Application.DTOs.Requests;
 using IRControl.Application.DTOs.Responses;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Mappings;
 using IRControl.Domain.Entities;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +14,14 @@ namespace IRControl.Application.Services;
 public class DependenteService : IDependenteService
 {
     private readonly AppDbContext _context;
+    private readonly IAtividadeService _atividadeService;
+    private readonly IUserContext _userContext;
 
-    public DependenteService(AppDbContext context)
+    public DependenteService(AppDbContext context, IAtividadeService atividadeService, IUserContext userContext)
     {
         _context = context;
+        _atividadeService = atividadeService;
+        _userContext = userContext;
     }
 
     public async Task<IEnumerable<DependenteResponse>> ObterTodosAsync()
@@ -37,6 +44,7 @@ public class DependenteService : IDependenteService
     public async Task<DependenteResponse> CriarAsync(
         CreateDependenteRequest request)
     {
+
         var dependente = new Dependente
         {
             Nome = request.Nome,
@@ -49,6 +57,9 @@ public class DependenteService : IDependenteService
         _context.Dependentes.Add(dependente);
 
         await _context.SaveChangesAsync();
+
+        await _atividadeService.RegistrarAsync(TipoAtividade.Cadastro, OrigensAtividade.Dependentes, TitulosAtividade.DependenteCadastrado, DescricoesAtividade.DependenteCadastrado(dependente.Nome), _userContext.UsuarioId,   _userContext.Login);
+
 
         return dependente.ToResponse();
     }
@@ -70,6 +81,8 @@ public class DependenteService : IDependenteService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Alteracao, OrigensAtividade.Dependentes, TitulosAtividade.DependenteAlterado, DescricoesAtividade.DependenteAlterado(dependente.Nome), _userContext.UsuarioId, _userContext.Login);
+
         return dependente.ToResponse();
     }
 
@@ -82,6 +95,8 @@ public class DependenteService : IDependenteService
             return false;
 
         _context.Dependentes.Remove(dependente);
+
+        await _atividadeService.RegistrarAsync( TipoAtividade.Exclusao, OrigensAtividade.Dependentes,  TitulosAtividade.DependenteExcluido,  DescricoesAtividade.DependenteExcluido(dependente.Nome), _userContext.UsuarioId, _userContext.Login);
 
         await _context.SaveChangesAsync();
 

@@ -1,4 +1,7 @@
 using IRControl.API.Extensions;
+using IRControl.Application.Atividades.Mappings;
+using IRControl.Application.Atividades.Services;
+using IRControl.Application.Business.Atividades.Interface;
 using IRControl.Application.Business.Auditoria.Interfaces;
 using IRControl.Application.Business.Auditoria.Rules.Conferencia;
 using IRControl.Application.Business.Auditoria.Rules.Dependentes;
@@ -6,16 +9,17 @@ using IRControl.Application.Business.Auditoria.Rules.DespesasMedicas;
 using IRControl.Application.Business.Auditoria.Rules.Holerites;
 using IRControl.Application.Business.Auditoria.Rules.Informes;
 using IRControl.Application.Business.Auditoria.Services;
+using IRControl.Application.Business.Authentication.Interfaces;
+using IRControl.Application.Business.Authentication.Services;
 using IRControl.Application.Business.Dashboard.Interfaces;
 using IRControl.Application.Business.Dashboard.Services;
 using IRControl.Application.Business.Declaracao.Interfaces;
 using IRControl.Application.Business.Declaracao.Services;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Services;
-using IRControl.Infrastructure.Authentication.Interfaces;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Authentication.Models;
 using IRControl.Infrastructure.Authentication.Security;
-using IRControl.Infrastructure.Authentication.Services;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +64,6 @@ builder.Services.Configure<JwtSettings>(
 
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 
@@ -90,7 +93,20 @@ builder.Services
 builder.Services.AddAuthorization();
 #endregion
 
+
+builder.Services.AddScoped<IAtividadeService, AtividadeService>();
+
+builder.Services.AddAutoMapper(
+    cfg => { },
+    typeof(AtividadeProfile).Assembly
+);
+
+
 #region Swagger
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 

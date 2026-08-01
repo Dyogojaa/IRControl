@@ -1,8 +1,11 @@
-﻿using IRControl.Application.DTOs.Requests;
+﻿using IRControl.Application.Business.Atividades.Interface;
+using IRControl.Application.Common.Constants;
+using IRControl.Application.DTOs.Requests;
 using IRControl.Application.DTOs.Responses;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Mappings;
 using IRControl.Domain.Entities;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +14,14 @@ namespace IRControl.Application.Services;
 public class DespesaMedicaService : IDespesaMedicaService
 {
     private readonly AppDbContext _context;
+    private readonly IAtividadeService _atividadeService;
+    private readonly IUserContext _userContext;
 
-    public DespesaMedicaService(AppDbContext context)
+    public DespesaMedicaService(AppDbContext context, IAtividadeService atividadeService, IUserContext userContext)
     {
         _context = context;
+        _atividadeService = atividadeService;
+        _userContext = userContext;
     }
 
     public async Task<IEnumerable<DespesaMedicaResponse>> ObterTodosAsync()
@@ -62,6 +69,8 @@ public class DespesaMedicaService : IDespesaMedicaService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Cadastro, OrigensAtividade.DespesasMedicas, TitulosAtividade.DespesaMedicaCadastrada, DescricoesAtividade.DespesaMedicaCadastrada(despesa.MedicoClinica), _userContext.UsuarioId, _userContext.Login);
+
         await _context.Entry(despesa)
             .Reference(x => x.Dependente)
             .LoadAsync();
@@ -91,6 +100,8 @@ public class DespesaMedicaService : IDespesaMedicaService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Alteracao, OrigensAtividade.DespesasMedicas, TitulosAtividade.DespesaMedicaAlterada, DescricoesAtividade.DespesaMedicaAlterada(despesa.MedicoClinica), _userContext.UsuarioId, _userContext.Login);
+
         return despesa.ToResponse();
     }
 
@@ -105,6 +116,8 @@ public class DespesaMedicaService : IDespesaMedicaService
         _context.DespesasMedicas.Remove(despesa);
 
         await _context.SaveChangesAsync();
+
+        await _atividadeService.RegistrarAsync(TipoAtividade.Exclusao, OrigensAtividade.DespesasMedicas, TitulosAtividade.DespesaMedicaExcluida, DescricoesAtividade.DespesaMedicaExcluida(despesa.MedicoClinica), _userContext.UsuarioId, _userContext.Login);
 
         return true;
     }

@@ -1,22 +1,40 @@
 ﻿using BCrypt.Net;
-using IRControl.Infrastructure.Authentication.DTOs;
-using IRControl.Infrastructure.Authentication.Interfaces;
+using IRControl.Application.Business.Atividades.DTOs;
+using IRControl.Application.Business.Atividades.Interface;
+using IRControl.Application.Business.Authentication.DTOs;
+using IRControl.Application.Business.Authentication.Interfaces;
+using IRControl.Application.Common.Constants;
+using IRControl.Domain.Entities;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace IRControl.Infrastructure.Authentication.Services;
+namespace IRControl.Application.Business.Authentication.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly AppDbContext _context;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IAtividadeService _atividadeService;
 
     public AuthenticationService(
-        AppDbContext context,
-        IJwtTokenGenerator jwtTokenGenerator)
+     AppDbContext context,
+     IJwtTokenGenerator jwtTokenGenerator,
+     IAtividadeService atividadeService)
     {
         _context = context;
         _jwtTokenGenerator = jwtTokenGenerator;
+        _atividadeService = atividadeService;
+    }
+
+    public Task AlterarSenhaAsync(Guid usuarioId, AlterarSenhaRequest request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task EsqueciSenhaAsync(EsqueciSenhaRequest request)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -60,6 +78,8 @@ public class AuthenticationService : IAuthenticationService
             };
         }
 
+
+
         var senhaValida = BCrypt.Net.BCrypt.Verify(
             request.Senha,
             usuario.SenhaHash);
@@ -77,6 +97,8 @@ public class AuthenticationService : IAuthenticationService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Login, OrigensAtividade.Autenticacao, TitulosAtividade.LoginRealizado,  DescricoesAtividade.Login(usuario.Login));
+
         var jwt = _jwtTokenGenerator.GenerateToken(usuario);
 
         return new LoginResponse
@@ -91,22 +113,12 @@ public class AuthenticationService : IAuthenticationService
         };
     }
 
-    public Task AlterarSenhaAsync(Guid usuarioId, AlterarSenhaRequest request)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task EsqueciSenhaAsync(EsqueciSenhaRequest request)
+    public Task LogoutAsync(Guid usuarioId)
     {
         throw new NotImplementedException();
     }
 
     public Task<LoginResponse> RefreshTokenAsync(RefreshTokenRequest request)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task LogoutAsync(Guid usuarioId)
     {
         throw new NotImplementedException();
     }

@@ -19,5 +19,9 @@ namespace IRControl.Domain.Entities
         public TipoAtividade Tipo { get; set; }
 
         public DateTime DataHora { get; set; } = DateTime.UtcNow;
+
+        public Guid? UsuarioId { get; set; }
+
+        public string? UsuarioLogin { get; set; }
     }
 }

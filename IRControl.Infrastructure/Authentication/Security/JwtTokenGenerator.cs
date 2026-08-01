@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using IRControl.Domain.Entities;
-using IRControl.Infrastructure.Authentication.Interfaces;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Authentication.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -51,4 +51,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             Expiration = expiration
         };
     }
+
+    
 }

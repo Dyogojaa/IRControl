@@ -1,8 +1,11 @@
 ﻿
 
-using IRControl.Infrastructure.Authentication.DTOs;
 
-namespace IRControl.Infrastructure.Authentication.Interfaces;
+
+using IRControl.Application.Business.Authentication.DTOs;
+
+
+namespace IRControl.Application.Business.Authentication.Interfaces;
 
 public interface IAuthenticationService
 {

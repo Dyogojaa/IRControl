@@ -1,4 +1,4 @@
-﻿namespace IRControl.Infrastructure.Authentication.DTOs;
+﻿namespace IRControl.Application.Business.Authentication.DTOs;
 
 public class AlterarSenhaRequest
 {

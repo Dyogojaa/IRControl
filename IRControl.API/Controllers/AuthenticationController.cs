@@ -1,5 +1,5 @@
-﻿using IRControl.Infrastructure.Authentication.DTOs;
-using IRControl.Infrastructure.Authentication.Interfaces;
+﻿using IRControl.Application.Business.Authentication.DTOs;
+using IRControl.Application.Business.Authentication.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

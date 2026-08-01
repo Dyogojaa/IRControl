@@ -1,8 +1,11 @@
-﻿using IRControl.Application.DTOs.Requests;
+﻿using IRControl.Application.Business.Atividades.Interface;
+using IRControl.Application.Common.Constants;
+using IRControl.Application.DTOs.Requests;
 using IRControl.Application.DTOs.Responses;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Mappings;
 using IRControl.Domain.Entities;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +14,14 @@ namespace IRControl.Application.Services;
 public class HoleriteService : IHoleriteService
 {
     private readonly AppDbContext _context;
+    private readonly IAtividadeService _atividadeService;
+    private readonly IUserContext _userContext;
 
-    public HoleriteService(AppDbContext context)
+    public HoleriteService(AppDbContext context, IAtividadeService atividadeService, IUserContext userContext)
     {
         _context = context;
+        _atividadeService = atividadeService;
+        _userContext = userContext;
     }
 
     public async Task<IEnumerable<HoleriteResponse>> ObterTodosAsync()
@@ -56,6 +63,8 @@ public class HoleriteService : IHoleriteService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Cadastro, OrigensAtividade.Holerites,  TitulosAtividade.HoleriteCadastrado, DescricoesAtividade.HoleriteCadastrado(holerite.Mes,holerite.Ano), _userContext.UsuarioId, _userContext.Login);
+
         return holerite.ToResponse();
     }
 
@@ -70,6 +79,8 @@ public class HoleriteService : IHoleriteService
         _context.Holerites.Remove(holerite);
 
         await _context.SaveChangesAsync();
+
+        await _atividadeService.RegistrarAsync(TipoAtividade.Exclusao, OrigensAtividade.Holerites, TitulosAtividade.HoleriteExcluido, DescricoesAtividade.HoleriteExcluido(holerite.Mes, holerite.Ano), _userContext.UsuarioId, _userContext.Login);
 
         return true;
     }
@@ -93,6 +104,8 @@ public class HoleriteService : IHoleriteService
         holerite.OutrosDescontos = request.OutrosDescontos;
 
         await _context.SaveChangesAsync();
+
+        await _atividadeService.RegistrarAsync(TipoAtividade.Alteracao, OrigensAtividade.Holerites, TitulosAtividade.HoleriteAlterado, DescricoesAtividade.HoleriteAlterado(holerite.Mes, holerite.Ano), _userContext.UsuarioId, _userContext.Login);
 
         return holerite.ToResponse();
     }

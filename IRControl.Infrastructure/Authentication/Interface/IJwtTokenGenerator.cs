@@ -1,7 +1,11 @@
-﻿using IRControl.Domain.Entities;
+﻿
+
+
+using IRControl.Domain.Entities;
 using IRControl.Infrastructure.Authentication.Models;
 
-namespace IRControl.Infrastructure.Authentication.Interfaces;
+
+namespace IRControl.Infrastructure.Authentication.Interface;
 
 public interface IJwtTokenGenerator
 {

@@ -1,8 +1,11 @@
-﻿using IRControl.Application.DTOs.Requests;
+﻿using IRControl.Application.Business.Atividades.Interface;
+using IRControl.Application.Common.Constants;
+using IRControl.Application.DTOs.Requests;
 using IRControl.Application.DTOs.Responses;
 using IRControl.Application.Interfaces;
 using IRControl.Application.Mappings;
 using IRControl.Domain.Entities;
+using IRControl.Infrastructure.Authentication.Interface;
 using IRControl.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +14,15 @@ namespace IRControl.Application.Services;
 public class InformeRendimentoService : IInformeRendimentoService
 {
     private readonly AppDbContext _context;
+    private readonly IAtividadeService _atividadeService;
+    private readonly IUserContext _userContext;
 
     public InformeRendimentoService(
-        AppDbContext context)
+        AppDbContext context, IAtividadeService atividadeService, IUserContext userContext)
     {
         _context = context;
+        _atividadeService = atividadeService;
+        _userContext = userContext;
     }
 
     public async Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync()
@@ -54,6 +61,8 @@ public class InformeRendimentoService : IInformeRendimentoService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync( TipoAtividade.Cadastro,  OrigensAtividade.Informes,  TitulosAtividade.InformeCadastrado, DescricoesAtividade.InformeCadastrado(informe.Empresa), _userContext.UsuarioId, _userContext.Login);
+
         return informe.ToResponse();
     }
 
@@ -77,6 +86,8 @@ public class InformeRendimentoService : IInformeRendimentoService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(  TipoAtividade.Alteracao, OrigensAtividade.Informes,  TitulosAtividade.InformeAlterado,  DescricoesAtividade.InformeAlterado(informe.Empresa),_userContext.UsuarioId,_userContext.Login);
+
         return informe.ToResponse();
     }
 
@@ -92,6 +103,8 @@ public class InformeRendimentoService : IInformeRendimentoService
 
         await _context.SaveChangesAsync();
 
+        await _atividadeService.RegistrarAsync(TipoAtividade.Exclusao, OrigensAtividade.Informes, TitulosAtividade.InformeExcluido, DescricoesAtividade.InformeExcluido(informe.Empresa), _userContext.UsuarioId, _userContext.Login);
+        
         return true;
     }
 
