@@ -1,10 +1,12 @@
 ﻿using IRControl.Application.Business.Declaracao.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IRControl.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DeclaracaoController : ControllerBase
 {
     private readonly ISituacaoDeclaracaoService _situacaoService;

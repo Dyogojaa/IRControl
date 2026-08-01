@@ -7,6 +7,7 @@ namespace IRControl.API.Controllers;
 
 [ApiController]
 [Route("api/auth")]
+[AllowAnonymous]
 public class AuthenticationController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;

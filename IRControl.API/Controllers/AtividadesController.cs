@@ -8,6 +8,7 @@ namespace IRControl.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AtividadesController : ControllerBase
 {
     private readonly IAtividadeService _atividadeService;
@@ -23,8 +24,7 @@ public class AtividadesController : ControllerBase
     /// <param name="quantidade">
     /// Quantidade de registros retornados. Padrão: 10.
     /// </param>
-    [HttpGet]
-    [AllowAnonymous] // Alterar para [Authorize] quando finalizarmos a segurança
+    [HttpGet]    
     [ProducesResponseType(typeof(List<AtividadeResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<AtividadeResponse>>> Get(

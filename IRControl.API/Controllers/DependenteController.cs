@@ -1,11 +1,13 @@
 ﻿using IRControl.Application.DTOs.Requests;
 using IRControl.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IRControl.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DependenteController : ControllerBase
 {
     private readonly IDependenteService _service;
