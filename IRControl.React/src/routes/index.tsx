@@ -2,6 +2,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "@/layouts/MainLayout";
 
+import { ProtectedRoute } from "@/auth/ProtectedRoute";
+
+import LoginPage from "@/pages/login/LoginPage";    
+
+
 import DashboardPage from "@/pages/Dashboard/DashboardPage";
 import HoleritesPage from "@/pages/Holerites/HoleritesPage";
 import DependentesPage from "@/pages/Dependentes/DependentesPage";
@@ -10,10 +15,28 @@ import InformesPage from "@/pages/Informes/InformesPage";
 import AuditoriaPage from "@/pages/Auditoria/AuditoriaPage";
 
 function AppRoutes() {
+
     return (
+
         <Routes>
-            <Route element={<MainLayout />}>
-                <Route index element={<Navigate to="/dashboard" replace />} />
+
+            <Route
+                path="/login"
+                element={<LoginPage />}
+            />
+
+            <Route
+                element={
+                    <ProtectedRoute>
+                        <MainLayout />
+                    </ProtectedRoute>
+                }
+            >
+
+                <Route
+                    index
+                    element={<Navigate to="/dashboard" replace />}
+                />
 
                 <Route
                     path="/dashboard"
@@ -49,9 +72,13 @@ function AppRoutes() {
                     path="*"
                     element={<Navigate to="/dashboard" replace />}
                 />
+
             </Route>
+
         </Routes>
+
     );
+
 }
 
 export default AppRoutes;

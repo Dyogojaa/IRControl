@@ -1,4 +1,4 @@
-import api from "@/api/axios";
+import api from "@/api/api";
 import { endpoints } from "@/api/endpoints";
 import type { DashboardResponse } from "@/types/dashboard";
 
