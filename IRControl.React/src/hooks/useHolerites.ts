@@ -4,6 +4,7 @@ import HoleriteService from "@/services/HoleriteService";
 
 import type {
     HoleriteCreateRequest,
+    HoleriteFiltro,
     HoleriteResponse,
     HoleriteUpdateRequest,
 } from "@/types/holerite";
@@ -16,7 +17,11 @@ export function useHolerites() {
 
     const [error, setError] = useState<string | null>(null);
 
-    const listar = useCallback(async () => {
+    const listar = useCallback(async (
+
+    filtro?: HoleriteFiltro
+
+    ) => {
 
         try {
 
@@ -24,8 +29,10 @@ export function useHolerites() {
 
             setError(null);
 
-            const dados = await HoleriteService.listar();
-            console.log("Service retornou:", dados);
+            const dados =
+                await HoleriteService.listar(
+                    filtro
+                );
 
             setHolerites(dados);
 
@@ -169,9 +176,13 @@ export function useHolerites() {
 
     }, []);
 
-    const atualizarLista = useCallback(async () => {
+    const atualizarLista = useCallback(async (
 
-        await listar();
+        filtro?: HoleriteFiltro
+
+    ) => {
+
+        await listar(filtro);
 
     }, [listar]);
 

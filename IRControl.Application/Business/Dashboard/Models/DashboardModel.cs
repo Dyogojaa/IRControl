@@ -17,4 +17,6 @@ public class DashboardModel
     public DashboardDespesaMedicaModel DespesasMedicas { get; set; } = new();
 
     public DashboardAuditoriaModel Auditoria { get; set; } = new();
+
+    public List<PendenciaModel> Pendencias { get; set; } = [];
 }

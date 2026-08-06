@@ -24,12 +24,48 @@ public class HoleriteService : IHoleriteService
         _userContext = userContext;
     }
 
-    public async Task<IEnumerable<HoleriteResponse>> ObterTodosAsync()
+    public async Task<IEnumerable<HoleriteResponse>> ObterTodosAsync(
+    ListarHoleritesRequest request)
     {
-        var holerites = await _context.Holerites
-            .OrderByDescending(x => x.Ano)
-            .ThenByDescending(x => x.Mes)
-            .ToListAsync();
+        var query =
+            _context.Holerites.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Pesquisa))
+        {
+            var pesquisa = request.Pesquisa.Trim();
+
+            query = query.Where(x =>
+
+                x.Ano.ToString().Contains(pesquisa)
+
+                ||
+
+                x.Mes.ToString().Contains(pesquisa)
+
+                ||
+
+                x.SalarioBruto.ToString().Contains(pesquisa)
+
+                ||
+
+                x.Inss.ToString().Contains(pesquisa)
+
+                ||
+
+                x.Irrf.ToString().Contains(pesquisa)
+
+                ||
+
+                x.SalarioLiquido.ToString().Contains(pesquisa)
+
+            );
+        }
+
+        var holerites =
+            await query
+                .OrderByDescending(x => x.Ano)
+                .ThenByDescending(x => x.Mes)
+                .ToListAsync();
 
         return holerites.Select(x => x.ToResponse());
     }
@@ -63,7 +99,7 @@ public class HoleriteService : IHoleriteService
 
         await _context.SaveChangesAsync();
 
-        await _atividadeService.RegistrarAsync(TipoAtividade.Cadastro, OrigensAtividade.Holerites,  TitulosAtividade.HoleriteCadastrado, DescricoesAtividade.HoleriteCadastrado(holerite.Mes,holerite.Ano), _userContext.UsuarioId, _userContext.Login);
+        await _atividadeService.RegistrarAsync(TipoAtividade.Cadastro, OrigensAtividade.Holerites, TitulosAtividade.HoleriteCadastrado, DescricoesAtividade.HoleriteCadastrado(holerite.Mes, holerite.Ano), _userContext.UsuarioId, _userContext.Login);
 
         return holerite.ToResponse();
     }

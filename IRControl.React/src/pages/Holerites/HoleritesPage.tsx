@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 
@@ -17,6 +17,7 @@ import type {
 } from "@/types/holerite";
 
 type FormMode = "create" | "edit" | "view";
+
 
 export default function HoleritesPage() {
 
@@ -42,6 +43,8 @@ export default function HoleritesPage() {
 
     const [formMode, setFormMode] =
         useState<FormMode>("create");
+
+    const [pesquisa, setPesquisa] =  useState("");        
 
     const [form, setForm] =
         useState<HoleriteCreateRequest>({
@@ -169,7 +172,9 @@ export default function HoleritesPage() {
 
             }
 
-            await listar();
+            await listar({
+                pesquisa
+            });
 
             alert(
                 editingId === null
@@ -214,7 +219,11 @@ export default function HoleritesPage() {
 
             await excluir(selectedId);
 
-            await listar();
+            await listar({
+                pesquisa
+            });
+
+
 
             alert("Holerite excluído com sucesso.");
 
@@ -231,11 +240,21 @@ export default function HoleritesPage() {
 
     }
 
+    useEffect(() => {
+
+        void listar({
+            pesquisa
+        });
+
+    }, [pesquisa, listar]);
+
     return (
 
         <Box sx={{ p: 3 }}>
 
             <HoleritesToolbar
+                pesquisa={pesquisa}
+                onPesquisaChange={setPesquisa}
                 onNovo={novo}
             />
 

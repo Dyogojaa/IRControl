@@ -144,6 +144,55 @@ public class DashboardService : IDashboardService
 
         #endregion
 
+        model.Pendencias =  ObterPendencias(model);
+
         return model;
+    }
+
+    private static List<PendenciaModel> ObterPendencias(DashboardModel model)
+    {
+        var pendencias = new List<PendenciaModel>();
+
+        if (model.Holerites.Cadastrados < model.Holerites.Esperados)
+        {
+            pendencias.Add(new PendenciaModel
+            {
+                Titulo = "Holerites pendentes",
+                Descricao =
+                    $"Existem {model.Holerites.Esperados - model.Holerites.Cadastrados} holerite(s) ainda não cadastrados."
+            });
+        }
+
+        if (!model.Informe.Cadastrado)
+        {
+            pendencias.Add(new PendenciaModel
+            {
+                Titulo = "Informe de Rendimentos",
+                Descricao = "Nenhum Informe de Rendimentos foi cadastrado."
+            });
+        }
+
+        if (model.Dependentes.SemCpf > 0)
+        {
+            pendencias.Add(new PendenciaModel
+            {
+                Titulo = "Dependentes",
+                Descricao =
+                    $"{model.Dependentes.SemCpf} dependente(s) sem CPF."
+            });
+        }
+
+        if (model.Auditoria.TotalErros > 0)
+        {
+            pendencias.Add(new PendenciaModel
+            {
+                Titulo = "Auditoria",
+                Descricao =
+                    $"{model.Auditoria.TotalErros} inconsistência(s) encontrada(s).",
+                Tipo = "error"
+            });
+        }
+
+        return pendencias;
     }
 }

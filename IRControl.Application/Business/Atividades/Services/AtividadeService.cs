@@ -21,14 +21,25 @@ public class AtividadeService : IAtividadeService
         _mapper = mapper;
     }
 
-    public async Task<List<AtividadeResponse>> ObterRecentesAsync(int quantidade = 10)
+    public async Task<List<AtividadeResponse>> ObterRecentesAsync(int quantidade = 3)
     {
-        return await _context.Atividades
+        var atividades = await _context.Atividades
             .AsNoTracking()
             .OrderByDescending(x => x.DataHora)
-            .Take(quantidade)
-            .ProjectTo<AtividadeResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
+
+        var resultado = atividades
+            .GroupBy(x => new
+            {
+                x.Tipo,
+                x.Origem
+            })
+            .Select(g => g.First())
+            .OrderByDescending(x => x.DataHora)
+            .Take(quantidade)
+            .ToList();
+
+        return _mapper.Map<List<AtividadeResponse>>(resultado);
     }
 
     public async Task RegistrarAsync(RegistrarAtividadeRequest request)

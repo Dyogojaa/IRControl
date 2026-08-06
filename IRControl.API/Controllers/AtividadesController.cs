@@ -28,7 +28,7 @@ public class AtividadesController : ControllerBase
     [ProducesResponseType(typeof(List<AtividadeResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<AtividadeResponse>>> Get(
-        [FromQuery] int quantidade = 10)
+        [FromQuery] int quantidade = 3)
     {
         var atividades = await _atividadeService.ObterRecentesAsync(quantidade);
 

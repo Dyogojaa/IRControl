@@ -17,7 +17,7 @@ export interface HoleriteResponse {
 }
 
 export interface HoleriteFiltro {
-    pesquisa: string;
+    pesquisa?: string;
 }
 
 export interface HoleriteCreateRequest {
@@ -38,3 +38,4 @@ export interface HoleriteUpdateRequest
 
     id: number;
 }
+

@@ -5,7 +5,7 @@ namespace IRControl.Application.Interfaces
 {
     public interface IHoleriteService
     {
-        Task<IEnumerable<HoleriteResponse>> ObterTodosAsync();
+        Task<IEnumerable<HoleriteResponse>> ObterTodosAsync( ListarHoleritesRequest request);
 
         Task<HoleriteResponse?> ObterPorIdAsync(int id);
 

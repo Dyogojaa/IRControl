@@ -1,4 +1,5 @@
 export interface DashboardResponse {
+    pendencias: Pendencia[];
     ano: number;
     status: string;
     ultimaAtualizacao: string;
@@ -7,6 +8,7 @@ export interface DashboardResponse {
     dependentes: DashboardDependentes;
     despesasMedicas: DashboardDespesasMedicas;
     auditoria: DashboardAuditoria;
+    
 }
 
 export interface DashboardHolerites {
@@ -46,4 +48,10 @@ export interface DashboardAuditoria {
     totalAlertas: number;
     totalInformacoes: number;
     declaracaoApta: boolean;
+}
+
+export interface Pendencia {
+    titulo: string;
+    descricao: string;
+    tipo: string;
 }

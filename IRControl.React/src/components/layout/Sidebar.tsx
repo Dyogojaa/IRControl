@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
@@ -15,6 +16,7 @@ import Logo from "./Logo";
 import MenuItem from "./MenuItem";
 
 import { DRAWER_WIDTH } from "@/config/layout";
+import { brand } from "@/branding/brand";
 
 function Sidebar() {
     return (
@@ -29,10 +31,13 @@ function Sidebar() {
                     boxSizing: "border-box",
                     border: 0,
 
-                    bgcolor: "#2E7D32",
-                    color: "#FFFFFF",
+                    bgcolor: "#69a56d",
+                    color: "#FFF",
 
-                    borderRight: "1px solid #1B5E20",
+                    borderRight: "1px solid #94c998",
+
+                    display: "flex",
+                    flexDirection: "column",
                 },
             }}
         >
@@ -40,13 +45,13 @@ function Sidebar() {
 
             <Divider
                 sx={{
-                    borderColor: "rgba(255,255,255,.12)",
+                    borderColor: "rgba(255,255,255,.15)",
                 }}
             />
 
             <List sx={{ mt: 1 }}>
                 <MenuItem
-                    text="Dashboard"
+                    text="Painel"
                     icon={<DashboardRoundedIcon />}
                     path="/"
                 />
@@ -86,7 +91,7 @@ function Sidebar() {
 
             <Divider
                 sx={{
-                    borderColor: "rgba(255,255,255,.12)",
+                    borderColor: "rgba(255,255,255,.15)",
                 }}
             />
 
@@ -97,6 +102,36 @@ function Sidebar() {
                     path="/configuracoes"
                 />
             </List>
+
+            <Box
+                sx={{
+                    px: 2.5,
+                    pb: 2,
+                    pt: 1.5,
+                }}
+            >
+                <Typography
+                    variant="caption"
+                    sx={{
+                        display: "block",
+                        fontWeight: 700,
+                        color: "rgba(255,255,255,.90)",
+                    }}
+                >
+                    Versão {brand.application.version}
+                </Typography>
+
+                <Typography
+                    variant="caption"
+                    sx={{
+                        display: "block",
+                        mt: .5,
+                        color: "rgba(255,255,255,.65)",
+                    }}
+                >
+                    © 2026 {brand.company.name}
+                </Typography>
+            </Box>
         </Drawer>
     );
 }
