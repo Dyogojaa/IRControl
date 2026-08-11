@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 
 import ConfirmDialog from "@/components/common/ConfirmDialog/ConfirmDialog";
 import FormDialog from "@/components/common/FormDialog";
 
-import InformeRendimentoForm from "@/components/dashboard/informes/InformeRendimentoForm";
-import InformesTable from "@/components/dashboard/informes/InformesTable";
-import InformesToolbar from "@/components/dashboard/informes/InformesToolbar";
+import InformeRendimentoForm
+    from "@/components/dashboard/informes/InformeRendimentoForm";
 
-import { useInformesRendimentos } from "@/hooks/useInformesRendimentos";
+import InformesTable
+    from "@/components/dashboard/informes/InformesTable";
+
+import InformesToolbar
+    from "@/components/dashboard/informes/InformesToolbar";
+
+import {
+    useInformesRendimentos,
+} from "@/hooks/useInformesRendimentos";
 
 import type {
     InformeRendimentoCreateRequest,
@@ -21,26 +28,20 @@ type FormMode = "create" | "edit" | "view";
 export default function InformesPage() {
 
     const {
-
         informes,
-
         loading,
-
         listar,
-
         criar,
-
         editar,
-
         excluir,
-
         obter,
-
     } = useInformesRendimentos();
 
-    const [openForm, setOpenForm] = useState(false);
+    const [openForm, setOpenForm] =
+        useState(false);
 
-    const [openDelete, setOpenDelete] = useState(false);
+    const [openDelete, setOpenDelete] =
+        useState(false);
 
     const [editingId, setEditingId] =
         useState<number | null>(null);
@@ -51,24 +52,27 @@ export default function InformesPage() {
     const [formMode, setFormMode] =
         useState<FormMode>("create");
 
+    const [pesquisa, setPesquisa] =
+        useState("");
+
     const [form, setForm] =
         useState<InformeRendimentoCreateRequest>({
-
             ano: new Date().getFullYear(),
-
             empresa: "",
-
             salarioBruto: 0,
-
             inss: 0,
-
             irrf: 0,
-
             planoSaude: 0,
-
             previdenciaPrivada: 0,
-
         });
+
+    useEffect(() => {
+
+        void listar({
+            pesquisa,
+        });
+
+    }, [pesquisa, listar]);
 
     function novo() {
 
@@ -77,21 +81,13 @@ export default function InformesPage() {
         setEditingId(null);
 
         setForm({
-
             ano: new Date().getFullYear(),
-
             empresa: "",
-
             salarioBruto: 0,
-
             inss: 0,
-
             irrf: 0,
-
             planoSaude: 0,
-
             previdenciaPrivada: 0,
-
         });
 
         setOpenForm(true);
@@ -110,21 +106,14 @@ export default function InformesPage() {
         setEditingId(id);
 
         setForm({
-
             ano: dados.ano,
-
             empresa: dados.empresa,
-
             salarioBruto: dados.salarioBruto,
-
             inss: dados.inss,
-
             irrf: dados.irrf,
-
             planoSaude: dados.planoSaude,
-
-            previdenciaPrivada: dados.previdenciaPrivada,
-
+            previdenciaPrivada:
+                dados.previdenciaPrivada,
         });
 
         setOpenForm(true);
@@ -143,21 +132,14 @@ export default function InformesPage() {
         setEditingId(id);
 
         setForm({
-
             ano: dados.ano,
-
             empresa: dados.empresa,
-
             salarioBruto: dados.salarioBruto,
-
             inss: dados.inss,
-
             irrf: dados.irrf,
-
             planoSaude: dados.planoSaude,
-
-            previdenciaPrivada: dados.previdenciaPrivada,
-
+            previdenciaPrivada:
+                dados.previdenciaPrivada,
         });
 
         setOpenForm(true);
@@ -206,16 +188,14 @@ export default function InformesPage() {
 
             }
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
             alert(
-
                 editingId === null
-
                     ? "Informe cadastrado com sucesso."
-
                     : "Informe atualizado com sucesso."
-
             );
 
             cancelarFormulario();
@@ -225,7 +205,9 @@ export default function InformesPage() {
 
             console.error(error);
 
-            alert("Erro ao salvar o informe.");
+            alert(
+                "Erro ao salvar o informe."
+            );
 
         }
 
@@ -256,9 +238,13 @@ export default function InformesPage() {
 
             await excluir(selectedId);
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
-            alert("Informe excluído com sucesso.");
+            alert(
+                "Informe excluído com sucesso."
+            );
 
             cancelarExclusao();
 
@@ -267,7 +253,9 @@ export default function InformesPage() {
 
             console.error(error);
 
-            alert("Erro ao excluir o informe.");
+            alert(
+                "Erro ao excluir o informe."
+            );
 
         }
 
@@ -278,6 +266,8 @@ export default function InformesPage() {
         <Box sx={{ p: 3 }}>
 
             <InformesToolbar
+                pesquisa={pesquisa}
+                onPesquisaChange={setPesquisa}
                 onNovo={novo}
             />
 
@@ -293,13 +283,9 @@ export default function InformesPage() {
                 open={openForm}
                 title={
                     formMode === "create"
-
                         ? "Novo Informe"
-
                         : formMode === "edit"
-
                             ? "Editar Informe"
-
                             : "Visualizar Informe"
                 }
                 loading={loading}

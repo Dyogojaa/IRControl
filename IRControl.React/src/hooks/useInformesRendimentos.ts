@@ -1,16 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import InformeRendimentoService
     from "@/services/InformeRendimentoService";
 
 import type {
-
     InformeRendimentoResponse,
-
     InformeRendimentoCreateRequest,
-
     InformeRendimentoUpdateRequest,
-
+    InformeRendimentoFiltro,
 } from "@/types/informeRendimento";
 
 export function useInformesRendimentos() {
@@ -24,7 +21,9 @@ export function useInformesRendimentos() {
     const [error, setError] =
         useState<string | null>(null);
 
-    const listar = useCallback(async () => {
+    const listar = useCallback(async (
+        filtro?: InformeRendimentoFiltro
+    ) => {
 
         try {
 
@@ -33,7 +32,9 @@ export function useInformesRendimentos() {
             setError(null);
 
             const dados =
-                await InformeRendimentoService.listar();
+                await InformeRendimentoService.listar(
+                    filtro
+                );
 
             setInformes(dados);
 
@@ -55,7 +56,9 @@ export function useInformesRendimentos() {
 
     }, []);
 
-    const obter = useCallback(async (id: number) => {
+    const obter = useCallback(async (
+        id: number
+    ) => {
 
         try {
 
@@ -63,7 +66,9 @@ export function useInformesRendimentos() {
 
             setError(null);
 
-            return await InformeRendimentoService.obter(id);
+            return await InformeRendimentoService.obter(
+                id
+            );
 
         }
         catch (err) {
@@ -86,9 +91,7 @@ export function useInformesRendimentos() {
     }, []);
 
     const criar = useCallback(async (
-
         request: InformeRendimentoCreateRequest
-
     ) => {
 
         try {
@@ -97,7 +100,9 @@ export function useInformesRendimentos() {
 
             setError(null);
 
-            await InformeRendimentoService.criar(request);
+            await InformeRendimentoService.criar(
+                request
+            );
 
         }
         catch (err) {
@@ -120,9 +125,7 @@ export function useInformesRendimentos() {
     }, []);
 
     const editar = useCallback(async (
-
         request: InformeRendimentoUpdateRequest
-
     ) => {
 
         try {
@@ -131,7 +134,9 @@ export function useInformesRendimentos() {
 
             setError(null);
 
-            await InformeRendimentoService.editar(request);
+            await InformeRendimentoService.editar(
+                request
+            );
 
         }
         catch (err) {
@@ -154,9 +159,7 @@ export function useInformesRendimentos() {
     }, []);
 
     const excluir = useCallback(async (
-
         id: number
-
     ) => {
 
         try {
@@ -165,7 +168,9 @@ export function useInformesRendimentos() {
 
             setError(null);
 
-            await InformeRendimentoService.excluir(id);
+            await InformeRendimentoService.excluir(
+                id
+            );
 
         }
         catch (err) {
@@ -187,9 +192,11 @@ export function useInformesRendimentos() {
 
     }, []);
 
-    const atualizarLista = useCallback(async () => {
+    const atualizarLista = useCallback(async (
+        filtro?: InformeRendimentoFiltro
+    ) => {
 
-        await listar();
+        await listar(filtro);
 
     }, [listar]);
 
@@ -198,12 +205,6 @@ export function useInformesRendimentos() {
         setError(null);
 
     };
-
-    useEffect(() => {
-
-        void listar();
-
-    }, [listar]);
 
     return {
 

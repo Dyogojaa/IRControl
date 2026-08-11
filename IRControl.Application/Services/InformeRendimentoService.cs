@@ -26,7 +26,7 @@ public class InformeRendimentoService : IInformeRendimentoService
     }
 
     public async Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync(
-        ListaInformesRequest request)
+    ListaInformesRequest request)
     {
         var query =
             _context.InformesRendimento.AsQueryable();
@@ -37,14 +37,15 @@ public class InformeRendimentoService : IInformeRendimentoService
                 request.Pesquisa.Trim();
 
             query = query.Where(x =>
-                x.Empresa.Contains(pesquisa)                 
-
+                x.Empresa.Contains(pesquisa) ||
+                x.Ano.ToString().Contains(pesquisa)
             );
         }
 
         var informes =
             await query
-                .OrderBy(x => x.Empresa)
+                .OrderByDescending(x => x.Ano)
+                .ThenBy(x => x.Empresa)
                 .ToListAsync();
 
         return informes.Select(x => x.ToResponse());

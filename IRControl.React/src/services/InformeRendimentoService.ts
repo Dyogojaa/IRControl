@@ -1,80 +1,72 @@
 import api from "@/api/api";
 
 import type {
-
     InformeRendimentoResponse,
-
     InformeRendimentoCreateRequest,
-
     InformeRendimentoUpdateRequest,
-
+    InformeRendimentoFiltro,
 } from "@/types/informeRendimento";
 
-class InformeRendimentoService {
+const endpoint = "/InformeRendimento";
 
-    async listar() {
+const InformeRendimentoService = {
+
+    async listar(
+        filtro?: InformeRendimentoFiltro
+    ): Promise<InformeRendimentoResponse[]> {
 
         const response =
             await api.get<InformeRendimentoResponse[]>(
-                "/InformeRendimento"
+                endpoint,
+                {
+                    params: filtro,
+                }
             );
 
         return response.data;
+    },
 
-    }
-
-    async obter(id: number) {
+    async obter(
+        id: number
+    ): Promise<InformeRendimentoResponse> {
 
         const response =
             await api.get<InformeRendimentoResponse>(
-                `/InformeRendimento/${id}`
+                `${endpoint}/${id}`
             );
 
         return response.data;
-
-    }
+    },
 
     async criar(
         request: InformeRendimentoCreateRequest
-    ) {
+    ): Promise<void> {
 
         await api.post(
-            "/InformeRendimento",
+            endpoint,
             request
         );
-
-    }
+    },
 
     async editar(
         request: InformeRendimentoUpdateRequest
-    ) {
+    ): Promise<void> {
 
         await api.put(
-            `/InformeRendimento/${request.id}`,
+            `${endpoint}/${request.id}`,
             request
         );
+    },
 
-    }
-
-    async excluir(id: number) {
+    async excluir(
+        id: number
+    ): Promise<void> {
 
         await api.delete(
-            `/InformeRendimento/${id}`
+            `${endpoint}/${id}`
         );
+    },
 
-    }
+};
 
-    async conferencia(ano: number) {
-
-        const response =
-            await api.get(
-                `/InformeRendimento/conferencia/${ano}`
-            );
-
-        return response.data;
-
-    }
-
-}
-
-export default new InformeRendimentoService();
+export default InformeRendimentoService;
