@@ -5,7 +5,8 @@ namespace IRControl.Application.Interfaces;
 
 public interface IInformeRendimentoService
 {
-    Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync();
+    Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync(
+        ListaInformesRequest request);
 
     Task<InformeRendimentoResponse?> ObterPorIdAsync(int id);
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import despesaMedicaService from "@/services/despesaMedicaService";
 
@@ -7,9 +7,15 @@ import type {
     DespesaMedicaRequest,
 } from "@/types/despesaMedica";
 
+import type {
+    DespesaMedicaFiltro,
+} from "@/services/despesaMedicaService";
+
 export interface DespesaMedicaUpdateRequest
     extends DespesaMedicaRequest {
+
     id: number;
+
 }
 
 export function useDespesasMedicas() {
@@ -23,7 +29,9 @@ export function useDespesasMedicas() {
     const [error, setError] =
         useState<string | null>(null);
 
-    const listar = useCallback(async () => {
+    const listar = useCallback(async (
+        filtro?: DespesaMedicaFiltro
+    ) => {
 
         try {
 
@@ -32,7 +40,9 @@ export function useDespesasMedicas() {
             setError(null);
 
             const dados =
-                await despesaMedicaService.getAll();
+                await despesaMedicaService.getAll(
+                    filtro
+                );
 
             setDespesasMedicas(dados);
 
@@ -55,9 +65,7 @@ export function useDespesasMedicas() {
     }, []);
 
     const obter = useCallback(async (
-
         id: number
-
     ) => {
 
         try {
@@ -66,7 +74,9 @@ export function useDespesasMedicas() {
 
             setError(null);
 
-            return await despesaMedicaService.getById(id);
+            return await despesaMedicaService.getById(
+                id
+            );
 
         }
         catch (err) {
@@ -89,9 +99,7 @@ export function useDespesasMedicas() {
     }, []);
 
     const criar = useCallback(async (
-
         request: DespesaMedicaRequest
-
     ) => {
 
         try {
@@ -100,7 +108,9 @@ export function useDespesasMedicas() {
 
             setError(null);
 
-            await despesaMedicaService.create(request);
+            await despesaMedicaService.create(
+                request
+            );
 
         }
         catch (err) {
@@ -123,9 +133,7 @@ export function useDespesasMedicas() {
     }, []);
 
     const editar = useCallback(async (
-
         request: DespesaMedicaUpdateRequest
-
     ) => {
 
         try {
@@ -160,9 +168,7 @@ export function useDespesasMedicas() {
     }, []);
 
     const excluir = useCallback(async (
-
         id: number
-
     ) => {
 
         try {
@@ -171,7 +177,9 @@ export function useDespesasMedicas() {
 
             setError(null);
 
-            await despesaMedicaService.delete(id);
+            await despesaMedicaService.delete(
+                id
+            );
 
         }
         catch (err) {
@@ -193,9 +201,11 @@ export function useDespesasMedicas() {
 
     }, []);
 
-    const atualizarLista = useCallback(async () => {
+    const atualizarLista = useCallback(async (
+        filtro?: DespesaMedicaFiltro
+    ) => {
 
-        await listar();
+        await listar(filtro);
 
     }, [listar]);
 
@@ -204,12 +214,6 @@ export function useDespesasMedicas() {
         setError(null);
 
     };
-
-    useEffect(() => {
-
-        void listar();
-
-    }, [listar]);
 
     return {
 

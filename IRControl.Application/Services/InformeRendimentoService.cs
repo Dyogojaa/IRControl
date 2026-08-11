@@ -25,11 +25,27 @@ public class InformeRendimentoService : IInformeRendimentoService
         _userContext = userContext;
     }
 
-    public async Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync()
+    public async Task<IEnumerable<InformeRendimentoResponse>> ObterTodosAsync(
+        ListaInformesRequest request)
     {
-        var informes = await _context.InformesRendimento
-            .OrderByDescending(x => x.Ano)
-            .ToListAsync();
+        var query =
+            _context.InformesRendimento.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Pesquisa))
+        {
+            var pesquisa =
+                request.Pesquisa.Trim();
+
+            query = query.Where(x =>
+                x.Empresa.Contains(pesquisa)                 
+
+            );
+        }
+
+        var informes =
+            await query
+                .OrderBy(x => x.Empresa)
+                .ToListAsync();
 
         return informes.Select(x => x.ToResponse());
     }

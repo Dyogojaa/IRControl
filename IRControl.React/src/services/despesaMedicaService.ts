@@ -5,23 +5,40 @@ import type {
     DespesaMedicaRequest,
 } from "@/types/despesaMedica";
 
+export interface DespesaMedicaFiltro {
+
+    pesquisa?: string;
+
+}
+
 const baseUrl = "/DespesaMedica";
 
 export const despesaMedicaService = {
 
-    async getAll(): Promise<DespesaMedica[]> {
+    async getAll(
+        filtro?: DespesaMedicaFiltro
+    ): Promise<DespesaMedica[]> {
 
-        const response = await api.get<DespesaMedica[]>(baseUrl);
+        const response =
+            await api.get<DespesaMedica[]>(
+                baseUrl,
+                {
+                    params: filtro,
+                }
+            );
 
         return response.data;
 
     },
 
-    async getById(id: number): Promise<DespesaMedica> {
+    async getById(
+        id: number
+    ): Promise<DespesaMedica> {
 
-        const response = await api.get<DespesaMedica>(
-            `${baseUrl}/${id}`
-        );
+        const response =
+            await api.get<DespesaMedica>(
+                `${baseUrl}/${id}`
+            );
 
         return response.data;
 
@@ -31,7 +48,10 @@ export const despesaMedicaService = {
         request: DespesaMedicaRequest
     ): Promise<void> {
 
-        await api.post(baseUrl, request);
+        await api.post(
+            baseUrl,
+            request
+        );
 
     },
 

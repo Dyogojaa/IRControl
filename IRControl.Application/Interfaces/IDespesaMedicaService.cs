@@ -1,11 +1,13 @@
 ﻿using IRControl.Application.DTOs.Requests;
 using IRControl.Application.DTOs.Responses;
+using IRControl.Domain.Entities;
 
 namespace IRControl.Application.Interfaces;
 
 public interface IDespesaMedicaService
 {
-    Task<IEnumerable<DespesaMedicaResponse>> ObterTodosAsync();
+    Task<IEnumerable<DespesaMedicaResponse>> ObterTodosAsync(
+        ListarDespesasMedicasRequest request);
 
     Task<DespesaMedicaResponse?> ObterPorIdAsync(int id);
 

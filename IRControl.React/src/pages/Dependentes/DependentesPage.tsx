@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 
@@ -12,7 +12,6 @@ import DependentesToolbar from "@/components/dashboard/dependentes/DependentesTo
 import { useDependentes } from "@/hooks/useDependentes";
 
 import type {
-    Dependente,
     DependenteRequest,
 } from "@/types/dependente";
 
@@ -41,9 +40,11 @@ export default function DependentesPage() {
         obter,
     } = useDependentes();
 
-    const [openForm, setOpenForm] = useState(false);
+    const [openForm, setOpenForm] =
+        useState(false);
 
-    const [openDelete, setOpenDelete] = useState(false);
+    const [openDelete, setOpenDelete] =
+        useState(false);
 
     const [editingId, setEditingId] =
         useState<number | null>(null);
@@ -54,8 +55,19 @@ export default function DependentesPage() {
     const [formMode, setFormMode] =
         useState<FormMode>("create");
 
+    const [pesquisa, setPesquisa] =
+        useState("");
+
     const [form, setForm] =
         useState<DependenteRequest>(emptyForm);
+
+    useEffect(() => {
+
+        void listar({
+            pesquisa,
+        });
+
+    }, [pesquisa, listar]);
 
     function novo() {
 
@@ -63,7 +75,9 @@ export default function DependentesPage() {
 
         setEditingId(null);
 
-        setForm(emptyForm);
+        setForm({
+            ...emptyForm,
+        });
 
         setOpenForm(true);
 
@@ -83,7 +97,8 @@ export default function DependentesPage() {
         setForm({
             nome: dados.nome,
             cpf: dados.cpf,
-            dataNascimento: dados.dataNascimento.substring(0, 10),
+            dataNascimento:
+                dados.dataNascimento.substring(0, 10),
             parentesco: dados.parentesco,
         });
 
@@ -105,7 +120,8 @@ export default function DependentesPage() {
         setForm({
             nome: dados.nome,
             cpf: dados.cpf,
-            dataNascimento: dados.dataNascimento.substring(0, 10),
+            dataNascimento:
+                dados.dataNascimento.substring(0, 10),
             parentesco: dados.parentesco,
         });
 
@@ -139,18 +155,24 @@ export default function DependentesPage() {
 
                 await criar(form);
 
-            } else {
+            }
+            else {
 
                 const request: DependenteUpdateRequest = {
+
                     id: editingId,
+
                     ...form,
+
                 };
 
                 await editar(request);
 
             }
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
             alert(
                 editingId === null
@@ -165,7 +187,9 @@ export default function DependentesPage() {
 
             console.error(error);
 
-            alert("Erro ao salvar o dependente.");
+            alert(
+                "Erro ao salvar o dependente."
+            );
 
         }
 
@@ -196,9 +220,13 @@ export default function DependentesPage() {
 
             await excluir(selectedId);
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
-            alert("Dependente excluído com sucesso.");
+            alert(
+                "Dependente excluído com sucesso."
+            );
 
             cancelarExclusao();
 
@@ -207,7 +235,9 @@ export default function DependentesPage() {
 
             console.error(error);
 
-            alert("Erro ao excluir o dependente.");
+            alert(
+                "Erro ao excluir o dependente."
+            );
 
         }
 
@@ -218,15 +248,23 @@ export default function DependentesPage() {
         <Box sx={{ p: 3 }}>
 
             <DependentesToolbar
+                pesquisa={pesquisa}
+                onPesquisaChange={setPesquisa}
                 onNovo={novo}
             />
 
             <DependentesTable
                 dependentes={dependentes}
                 loading={loading}
-                onView={(item) => visualizarRegistro(item.id)}
-                onEdit={(item) => editarRegistro(item.id)}
-                onDelete={(item) => confirmarExclusao(item.id)}
+                onView={(item) =>
+                    visualizarRegistro(item.id)
+                }
+                onEdit={(item) =>
+                    editarRegistro(item.id)
+                }
+                onDelete={(item) =>
+                    confirmarExclusao(item.id)
+                }
             />
 
             <FormDialog
@@ -264,5 +302,4 @@ export default function DependentesPage() {
         </Box>
 
     );
-
 }

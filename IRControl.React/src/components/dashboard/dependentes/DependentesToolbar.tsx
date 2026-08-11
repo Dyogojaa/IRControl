@@ -6,11 +6,21 @@ import TextField from "@mui/material/TextField";
 
 interface Props {
 
+    pesquisa: string;
+
+    onPesquisaChange: (
+        value: string
+    ) => void;
+
     onNovo: () => void;
 
 }
 
 export default function DependentesToolbar({
+
+    pesquisa,
+
+    onPesquisaChange,
 
     onNovo,
 
@@ -31,6 +41,12 @@ export default function DependentesToolbar({
                 label="Pesquisar"
                 size="small"
                 fullWidth
+                value={pesquisa}
+                onChange={(e) =>
+                    onPesquisaChange(
+                        e.target.value
+                    )
+                }
             />
 
             <Button

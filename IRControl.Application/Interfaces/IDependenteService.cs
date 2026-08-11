@@ -5,7 +5,8 @@ namespace IRControl.Application.Interfaces;
 
 public interface IDependenteService
 {
-    Task<IEnumerable<DependenteResponse>> ObterTodosAsync();
+    Task<IEnumerable<DependenteResponse>> ObterTodosAsync(
+        ListarDependentesRequest request);
 
     Task<DependenteResponse?> ObterPorIdAsync(int id);
 

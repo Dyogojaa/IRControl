@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { dependenteService } from "@/services/dependenteService";
 
@@ -7,6 +7,10 @@ import type {
     DependenteRequest,
 } from "@/types/dependente";
 
+import type {
+    DependenteFiltro,
+} from "@/services/dependenteService";
+
 export interface DependenteUpdateRequest
     extends DependenteRequest {
     id: number;
@@ -14,13 +18,18 @@ export interface DependenteUpdateRequest
 
 export function useDependentes() {
 
-    const [dependentes, setDependentes] = useState<Dependente[]>([]);
+    const [dependentes, setDependentes] =
+        useState<Dependente[]>([]);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] =
+        useState(false);
 
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] =
+        useState<string | null>(null);
 
-    const listar = useCallback(async () => {
+    const listar = useCallback(async (
+        filtro?: DependenteFiltro
+    ) => {
 
         try {
 
@@ -29,7 +38,9 @@ export function useDependentes() {
             setError(null);
 
             const dados =
-                await dependenteService.getAll();
+                await dependenteService.getAll(
+                    filtro
+                );
 
             setDependentes(dados);
 
@@ -52,9 +63,7 @@ export function useDependentes() {
     }, []);
 
     const obter = useCallback(async (
-
         id: number
-
     ) => {
 
         try {
@@ -86,9 +95,7 @@ export function useDependentes() {
     }, []);
 
     const criar = useCallback(async (
-
         request: DependenteRequest
-
     ) => {
 
         try {
@@ -97,7 +104,9 @@ export function useDependentes() {
 
             setError(null);
 
-            await dependenteService.create(request);
+            await dependenteService.create(
+                request
+            );
 
         }
         catch (err) {
@@ -120,9 +129,7 @@ export function useDependentes() {
     }, []);
 
     const editar = useCallback(async (
-
         request: DependenteUpdateRequest
-
     ) => {
 
         try {
@@ -157,9 +164,7 @@ export function useDependentes() {
     }, []);
 
     const excluir = useCallback(async (
-
         id: number
-
     ) => {
 
         try {
@@ -190,9 +195,11 @@ export function useDependentes() {
 
     }, []);
 
-    const atualizarLista = useCallback(async () => {
+    const atualizarLista = useCallback(async (
+        filtro?: DependenteFiltro
+    ) => {
 
-        await listar();
+        await listar(filtro);
 
     }, [listar]);
 
@@ -201,12 +208,6 @@ export function useDependentes() {
         setError(null);
 
     };
-
-    useEffect(() => {
-
-        void listar();
-
-    }, [listar]);
 
     return {
 
@@ -231,5 +232,4 @@ export function useDependentes() {
         limparErro,
 
     };
-
 }

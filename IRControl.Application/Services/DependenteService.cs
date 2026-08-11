@@ -24,14 +24,32 @@ public class DependenteService : IDependenteService
         _userContext = userContext;
     }
 
-    public async Task<IEnumerable<DependenteResponse>> ObterTodosAsync()
+    public async Task<IEnumerable<DependenteResponse>> ObterTodosAsync(
+        ListarDependentesRequest request)
     {
-        var dependentes = await _context.Dependentes
-            .OrderBy(x => x.Nome)
-            .ToListAsync();
+        var query =
+            _context.Dependentes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Pesquisa))
+        {
+            var pesquisa =
+                request.Pesquisa.Trim();
+
+            query = query.Where(x =>
+                x.Nome.Contains(pesquisa) ||
+                x.Cpf.Contains(pesquisa) ||
+                x.Parentesco.Contains(pesquisa)
+            );
+        }
+
+        var dependentes =
+            await query
+                .OrderBy(x => x.Nome)
+                .ToListAsync();
 
         return dependentes.Select(x => x.ToResponse());
     }
+
 
     public async Task<DependenteResponse?> ObterPorIdAsync(int id)
     {

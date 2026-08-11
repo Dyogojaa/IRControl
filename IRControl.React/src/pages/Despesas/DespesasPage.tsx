@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Box from "@mui/material/Box";
 
@@ -8,7 +8,6 @@ import FormDialog from "@/components/common/FormDialog";
 import DespesaMedicaForm from "@/components/dashboard/despesas/DespesaMedicaForm";
 import DespesasMedicasTable from "@/components/dashboard/despesas/DespesasMedicasTable";
 import DespesasMedicasToolbar from "@/components/dashboard/despesas/DespesasMedicasToolbar";
-
 
 import { useDependentes } from "@/hooks/useDependentes";
 import {
@@ -24,23 +23,14 @@ import type {
 type FormMode = "create" | "edit" | "view";
 
 const emptyForm: DespesaMedicaRequest = {
-
     dataDespesa: "",
-
     dependenteId: 0,
-
     medicoClinica: "",
-
     cpfCnpj: "",
-
     especialidade: "",
-
     valor: 0,
-
     valorReembolsado: 0,
-
     observacao: "",
-
 };
 
 export default function DespesasMedicasPage() {
@@ -68,9 +58,11 @@ export default function DespesasMedicasPage() {
         [dependentes]
     );
 
-    const [openForm, setOpenForm] = useState(false);
+    const [openForm, setOpenForm] =
+        useState(false);
 
-    const [openDelete, setOpenDelete] = useState(false);
+    const [openDelete, setOpenDelete] =
+        useState(false);
 
     const [editingId, setEditingId] =
         useState<number | null>(null);
@@ -81,8 +73,21 @@ export default function DespesasMedicasPage() {
     const [formMode, setFormMode] =
         useState<FormMode>("create");
 
+    const [pesquisa, setPesquisa] =
+        useState("");
+
     const [form, setForm] =
-        useState<DespesaMedicaRequest>(emptyForm);
+        useState<DespesaMedicaRequest>(
+            emptyForm
+        );
+
+    useEffect(() => {
+
+        void listar({
+            pesquisa,
+        });
+
+    }, [pesquisa, listar]);
 
     function novo() {
 
@@ -90,7 +95,9 @@ export default function DespesasMedicasPage() {
 
         setEditingId(null);
 
-        setForm(emptyForm);
+        setForm({
+            ...emptyForm,
+        });
 
         setOpenForm(true);
 
@@ -108,7 +115,6 @@ export default function DespesasMedicasPage() {
         setEditingId(id);
 
         setForm({
-
             dataDespesa:
                 dados.dataDespesa.substring(0, 10),
 
@@ -132,7 +138,6 @@ export default function DespesasMedicasPage() {
 
             observacao:
                 dados.observacao,
-
         });
 
         setOpenForm(true);
@@ -151,7 +156,6 @@ export default function DespesasMedicasPage() {
         setEditingId(id);
 
         setForm({
-
             dataDespesa:
                 dados.dataDespesa.substring(0, 10),
 
@@ -175,7 +179,6 @@ export default function DespesasMedicasPage() {
 
             observacao:
                 dados.observacao,
-
         });
 
         setOpenForm(true);
@@ -208,7 +211,8 @@ export default function DespesasMedicasPage() {
 
                 await criar(form);
 
-            } else {
+            }
+            else {
 
                 const request: DespesaMedicaUpdateRequest = {
 
@@ -222,7 +226,9 @@ export default function DespesasMedicasPage() {
 
             }
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
             alert(
                 editingId === null
@@ -237,7 +243,9 @@ export default function DespesasMedicasPage() {
 
             console.error(error);
 
-            alert("Erro ao salvar a despesa médica.");
+            alert(
+                "Erro ao salvar a despesa médica."
+            );
 
         }
 
@@ -268,7 +276,9 @@ export default function DespesasMedicasPage() {
 
             await excluir(selectedId);
 
-            await listar();
+            await listar({
+                pesquisa,
+            });
 
             alert(
                 "Despesa médica excluída com sucesso."
@@ -294,6 +304,8 @@ export default function DespesasMedicasPage() {
         <Box sx={{ p: 3 }}>
 
             <DespesasMedicasToolbar
+                pesquisa={pesquisa}
+                onPesquisaChange={setPesquisa}
                 onNovo={novo}
             />
 
@@ -347,5 +359,4 @@ export default function DespesasMedicasPage() {
         </Box>
 
     );
-
 }

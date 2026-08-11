@@ -19,9 +19,11 @@ public class DependenteController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(
+        [FromQuery] ListarDependentesRequest request)
     {
-        var resultado = await _service.ObterTodosAsync();
+        var resultado =
+            await _service.ObterTodosAsync(request);
 
         return Ok(resultado);
     }

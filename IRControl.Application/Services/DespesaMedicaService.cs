@@ -24,15 +24,33 @@ public class DespesaMedicaService : IDespesaMedicaService
         _userContext = userContext;
     }
 
-    public async Task<IEnumerable<DespesaMedicaResponse>> ObterTodosAsync()
-    {
-        var despesas = await _context.DespesasMedicas
-            .Include(x => x.Dependente)
-            .OrderByDescending(x => x.DataDespesa)
-            .ToListAsync();
 
-        return despesas.Select(x => x.ToResponse());
+    public async Task<IEnumerable<DespesaMedicaResponse>> ObterTodosAsync(
+    ListarDespesasMedicasRequest request)
+    {
+        var query =
+            _context.DespesasMedicas.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Pesquisa))
+        {
+            var pesquisa =
+                request.Pesquisa.Trim();
+
+            query = query.Where(x =>
+                x.MedicoClinica.Contains(pesquisa) ||
+                x.CpfCnpj.Contains(pesquisa) ||
+                x.Especialidade.Contains(pesquisa)
+            );
+        }
+
+        var despesasMedicas =
+            await query
+                .OrderByDescending(x => x.DataDespesa)
+                .ToListAsync();
+
+        return despesasMedicas.Select(x => x.ToResponse());
     }
+
 
     public async Task<DespesaMedicaResponse?> ObterPorIdAsync(int id)
     {
