@@ -17,4 +17,6 @@ public class Usuario
     public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
     public DateTime? DataUltimoLogin { get; set; }
+
+    public bool PrimeiroAcesso { get; set; } = true;
 }

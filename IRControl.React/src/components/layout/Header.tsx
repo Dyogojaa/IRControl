@@ -89,6 +89,14 @@ function Header() {
 
     }
 
+    function handleNotificationClick() {
+
+        handleCloseNotifications();
+
+        navigate("/auditoria");
+
+    }
+
     function getNotificationIcon(tipo: string) {
 
         switch (tipo) {
@@ -124,6 +132,22 @@ function Header() {
 
     }
 
+    function formatNotificationDescription(
+        descricao: string
+    ) {
+
+        return descricao
+            .replace(
+                "inconsistência(s) encontrada(s)",
+                "inconsistências encontradas"
+            )
+            .replace(
+                "inconsistencia(s) encontrada(s)",
+                "inconsistências encontradas"
+            );
+
+    }
+
     return (
 
         <AppBar
@@ -136,7 +160,7 @@ function Header() {
                 ml: `${DRAWER_WIDTH}px`,
                 bgcolor: "background.paper",
                 borderBottom: "1px solid",
-                borderColor: "divider"
+                borderColor: "divider",
             }}
         >
 
@@ -144,7 +168,7 @@ function Header() {
                 sx={{
                     height: HEADER_HEIGHT,
                     display: "flex",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
                 }}
             >
 
@@ -152,7 +176,7 @@ function Header() {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 2
+                        gap: 2,
                     }}
                 />
 
@@ -160,7 +184,7 @@ function Header() {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 2
+                        gap: 2,
                     }}
                 >
 
@@ -188,18 +212,18 @@ function Header() {
                             cursor: "pointer",
                             borderRadius: 2,
                             px: 1,
-                            py: .5,
+                            py: 0.5,
                             transition: ".2s",
 
                             "&:hover": {
-                                backgroundColor: "action.hover"
-                            }
+                                backgroundColor: "action.hover",
+                            },
                         }}
                     >
 
                         <Typography
                             sx={{
-                                fontWeight: 500
+                                fontWeight: 500,
                             }}
                         >
                             {user?.nome ?? "Usuário"}
@@ -209,181 +233,196 @@ function Header() {
                             sx={{
                                 width: 36,
                                 height: 36,
-                                bgcolor: "primary.main"
+                                bgcolor: "primary.main",
                             }}
                         >
                             {user?.nome?.charAt(0).toUpperCase() ?? "U"}
                         </Avatar>
 
                     </Box>
+
                     <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleCloseMenu}
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right"
-                    }}
-                    transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right"
-                    }}
-                >
-
-                    <MenuItem
-                        onClick={handleCloseMenu}
-                    >
-
-                        <ListItemIcon>
-
-                            <PersonOutlineRoundedIcon
-                                fontSize="small"
-                            />
-
-                        </ListItemIcon>
-
-                        Meu Perfil
-
-                    </MenuItem>
-
-                    <MenuItem
-                        onClick={handleCloseMenu}
-                    >
-
-                        <ListItemIcon>
-
-                            <SettingsOutlinedIcon
-                                fontSize="small"
-                            />
-
-                        </ListItemIcon>
-
-                        Configurações
-
-                    </MenuItem>
-
-                    <Divider />
-
-                    <MenuItem
-                        onClick={handleLogout}
-                    >
-
-                        <ListItemIcon>
-
-                            <LogoutRoundedIcon
-                                fontSize="small"
-                            />
-
-                        </ListItemIcon>
-
-                        Sair
-
-                    </MenuItem>
-
-                </Menu>
-
-                <Popover
-                    open={notificationOpen}
-                    anchorEl={notificationAnchor}
-                    onClose={handleCloseNotifications}
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
-                    transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
-                    slotProps={{
-                        paper: {
-                            sx: {
-                                width: 360,
-                                borderRadius: 2,
-                            },
-                        },
-                    }}
-                >
-
-                    <Box
-                        sx={{
-                            p: 2,
-                            borderBottom: "1px solid",
-                            borderColor: "divider",
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleCloseMenu}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
                         }}
                     >
 
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                fontWeight: 600,
-                            }}
+                        <MenuItem
+                            onClick={handleCloseMenu}
                         >
-                            Notificações
-                        </Typography>
 
-                        <Typography
-                            variant="caption"
-                            color="text.secondary"
+                            <ListItemIcon>
+
+                                <PersonOutlineRoundedIcon
+                                    fontSize="small"
+                                />
+
+                            </ListItemIcon>
+
+                            Meu Perfil
+
+                        </MenuItem>
+
+                        <MenuItem
+                            onClick={handleCloseMenu}
                         >
-                            Pendências da declaração
-                        </Typography>
 
-                    </Box>
+                            <ListItemIcon>
 
-                    {notifications.length === 0 ? (
+                                <SettingsOutlinedIcon
+                                    fontSize="small"
+                                />
+
+                            </ListItemIcon>
+
+                            Configurações
+
+                        </MenuItem>
+
+                        <Divider />
+
+                        <MenuItem
+                            onClick={handleLogout}
+                        >
+
+                            <ListItemIcon>
+
+                                <LogoutRoundedIcon
+                                    fontSize="small"
+                                />
+
+                            </ListItemIcon>
+
+                            Sair
+
+                        </MenuItem>
+
+                    </Menu>
+
+                    <Popover
+                        open={notificationOpen}
+                        anchorEl={notificationAnchor}
+                        onClose={handleCloseNotifications}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                        }}
+                        slotProps={{
+                            paper: {
+                                sx: {
+                                    width: 360,
+                                    borderRadius: 2,
+                                },
+                            },
+                        }}
+                    >
 
                         <Box
                             sx={{
-                                p: 3,
-                                textAlign: "center",
+                                p: 2,
+                                borderBottom: "1px solid",
+                                borderColor: "divider",
                             }}
                         >
 
                             <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Notificações
+                            </Typography>
+
+                            <Typography
+                                variant="caption"
                                 color="text.secondary"
                             >
-                                Nenhuma pendência encontrada.
+                                Pendências da declaração
                             </Typography>
 
                         </Box>
 
-                    ) : (
+                        {notifications.length === 0 ? (
 
-                        <List
-                            disablePadding
-                        >
+                            <Box
+                                sx={{
+                                    p: 3,
+                                    textAlign: "center",
+                                }}
+                            >
 
-                            {notifications.map((item, index) => (
-
-                                <ListItem
-                                    disablePadding
-                                    key={`${item.titulo}-${index}`}
+                                <Typography
+                                    color="text.secondary"
                                 >
+                                    Nenhuma pendência encontrada.
+                                </Typography>
 
-                                    <ListItemButton>
+                            </Box>
 
-                                        <ListItemIcon>
+                        ) : (
 
-                                            {getNotificationIcon(item.tipo)}
+                            <List
+                                disablePadding
+                            >
 
-                                        </ListItemIcon>
+                                {notifications.map(
+                                    (item, index) => (
 
-                                        <ListItemText
-                                            primary={item.titulo}
-                                            secondary={item.descricao}
-                                        />
+                                        <ListItem
+                                            disablePadding
+                                            key={`${item.titulo}-${index}`}
+                                        >
 
-                                    </ListItemButton>
+                                            <ListItemButton
+                                                onClick={
+                                                    handleNotificationClick
+                                                }
+                                            >
 
-                                </ListItem>
+                                                <ListItemIcon>
 
-                            ))}
+                                                    {getNotificationIcon(
+                                                        item.tipo
+                                                    )}
 
-                        </List>
+                                                </ListItemIcon>
 
-                    )}
+                                                <ListItemText
+                                                    primary={
+                                                        item.titulo
+                                                    }
+                                                    secondary={
+                                                        formatNotificationDescription(
+                                                            item.descricao
+                                                        )
+                                                    }
+                                                />
 
-                </Popover>
+                                            </ListItemButton>
+
+                                        </ListItem>
+
+                                    )
+                                )}
+
+                            </List>
+
+                        )}
+
+                    </Popover>
 
                 </Box>
 

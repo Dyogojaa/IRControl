@@ -7,12 +7,12 @@ namespace IRControl.API.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-[AllowAnonymous]
 public class AuthenticationController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;
 
-    public AuthenticationController(IAuthenticationService authenticationService)
+    public AuthenticationController(
+        IAuthenticationService authenticationService)
     {
         _authenticationService = authenticationService;
     }
@@ -22,14 +22,21 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     [AllowAnonymous]
     [HttpPost("login")]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+    [ProducesResponseType(
+        typeof(LoginResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(LoginResponse),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<LoginResponse>> Login(
+        LoginRequest request)
     {
         try
         {
-            var response = await _authenticationService.LoginAsync(request);
+            var response =
+                await _authenticationService.LoginAsync(request);
 
             if (!response.Sucesso)
                 return BadRequest(response);
@@ -38,13 +45,45 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError,
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
                 new LoginResponse
                 {
                     Sucesso = false,
-                    Mensagem = "Ocorreu um erro interno ao processar o login."
+                    Mensagem =
+                        "Ocorreu um erro interno ao processar o login."
                 });
         }
+    }
+
+    /// <summary>
+    /// Cria a senha no primeiro acesso do usuário autenticado.
+    /// </summary>
+    [Authorize]
+    [HttpPost("criar-senha")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> CriarSenha(
+        CriarSenhaRequest request)
+    {
+        var claimUsuarioId =    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
+
+        if (claimUsuarioId is null)
+            return Unauthorized();
+
+        if (!Guid.TryParse(
+                claimUsuarioId.Value,
+                out var usuarioId))
+        {
+            return Unauthorized();
+        }
+
+        await _authenticationService.CriarSenhaAsync(
+            usuarioId,
+            request);
+
+        return NoContent();
     }
 
     /// <summary>
@@ -52,11 +91,26 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpPost("alterar-senha")]
-    public async Task<IActionResult> AlterarSenha(AlterarSenhaRequest request)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> AlterarSenha(
+        AlterarSenhaRequest request)
     {
-        var usuarioId = Guid.Parse(User.FindFirst("sub")!.Value);
+        var claimUsuarioId = User.FindFirst("sub");
 
-        await _authenticationService.AlterarSenhaAsync(usuarioId, request);
+        if (claimUsuarioId is null)
+            return Unauthorized();
+
+        if (!Guid.TryParse(
+                claimUsuarioId.Value,
+                out var usuarioId))
+        {
+            return Unauthorized();
+        }
+
+        await _authenticationService.AlterarSenhaAsync(
+            usuarioId,
+            request);
 
         return NoContent();
     }
@@ -66,7 +120,9 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     [AllowAnonymous]
     [HttpPost("esqueci-senha")]
-    public async Task<IActionResult> EsqueciSenha(EsqueciSenhaRequest request)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> EsqueciSenha(
+        EsqueciSenhaRequest request)
     {
         await _authenticationService.EsqueciSenhaAsync(request);
 
@@ -78,9 +134,11 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     [AllowAnonymous]
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<LoginResponse>> RefreshToken(RefreshTokenRequest request)
+    public async Task<ActionResult<LoginResponse>> RefreshToken(
+        RefreshTokenRequest request)
     {
-        var response = await _authenticationService.RefreshTokenAsync(request);
+        var response =
+            await _authenticationService.RefreshTokenAsync(request);
 
         if (!response.Sucesso)
             return BadRequest(response);
@@ -93,9 +151,21 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Logout()
     {
-        var usuarioId = Guid.Parse(User.FindFirst("sub")!.Value);
+        var claimUsuarioId = User.FindFirst("sub");
+
+        if (claimUsuarioId is null)
+            return Unauthorized();
+
+        if (!Guid.TryParse(
+                claimUsuarioId.Value,
+                out var usuarioId))
+        {
+            return Unauthorized();
+        }
 
         await _authenticationService.LogoutAsync(usuarioId);
 

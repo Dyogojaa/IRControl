@@ -15,4 +15,6 @@ public class LoginResponse
     public string? Nome { get; set; }
 
     public string? Login { get; set; }
+
+    public bool PrimeiroAcesso { get; set; }
 }

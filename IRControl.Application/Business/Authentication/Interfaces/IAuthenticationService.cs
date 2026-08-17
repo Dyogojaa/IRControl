@@ -1,9 +1,4 @@
-﻿
-
-
-
-using IRControl.Application.Business.Authentication.DTOs;
-
+﻿using IRControl.Application.Business.Authentication.DTOs;
 
 namespace IRControl.Application.Business.Authentication.Interfaces;
 
@@ -11,11 +6,19 @@ public interface IAuthenticationService
 {
     Task<LoginResponse> LoginAsync(LoginRequest request);
 
-    Task AlterarSenhaAsync(Guid usuarioId, AlterarSenhaRequest request);
+    Task CriarSenhaAsync(
+        Guid usuarioId,
+        CriarSenhaRequest request);
 
-    Task EsqueciSenhaAsync(EsqueciSenhaRequest request);
+    Task AlterarSenhaAsync(
+        Guid usuarioId,
+        AlterarSenhaRequest request);
 
-    Task<LoginResponse> RefreshTokenAsync(RefreshTokenRequest request);
+    Task EsqueciSenhaAsync(
+        EsqueciSenhaRequest request);
+
+    Task<LoginResponse> RefreshTokenAsync(
+        RefreshTokenRequest request);
 
     Task LogoutAsync(Guid usuarioId);
 }

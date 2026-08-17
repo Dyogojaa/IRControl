@@ -5,21 +5,58 @@ import authStorage from "@/services/authStorage";
 
 const api = axios.create({
     baseURL: env.apiUrl,
-    timeout: 30000
+    timeout: 30000,
 });
 
-api.interceptors.request.use(config => {
+api.interceptors.request.use(
+    (config) => {
 
-    const token = authStorage.getToken();
+        const token =
+            authStorage.getToken();
 
-    if (token) {
+        if (token) {
 
-        config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization =
+                `Bearer ${token}`;
+
+        }
+
+        return config;
+
+    },
+    (error) => {
+
+        return Promise.reject(error);
 
     }
+);
 
-    return config;
+api.interceptors.response.use(
+    (response) => {
 
-});
+        return response;
+
+    },
+    (error) => {
+
+        if (error.response?.status === 401) {
+
+            authStorage.clear();
+
+            const currentPath =
+                window.location.pathname;
+
+            if (currentPath !== "/login") {
+
+                window.location.href = "/login";
+
+            }
+
+        }
+
+        return Promise.reject(error);
+
+    }
+);
 
 export default api;
