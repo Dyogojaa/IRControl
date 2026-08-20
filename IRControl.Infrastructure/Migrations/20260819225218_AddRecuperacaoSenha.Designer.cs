@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRControl.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260812210200_AddPrimeiroAcessoUsuario")]
-    partial class AddPrimeiroAcessoUsuario
+    [Migration("20260819225218_AddRecuperacaoSenha")]
+    partial class AddRecuperacaoSenha
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,6 +225,38 @@ namespace IRControl.Infrastructure.Migrations
                     b.ToTable("InformesRendimento");
                 });
 
+            modelBuilder.Entity("IRControl.Domain.Entities.RecuperacaoSenha", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Expiracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Utilizado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("RecuperacaoSenha", (string)null);
+                });
+
             modelBuilder.Entity("IRControl.Domain.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
@@ -257,6 +289,9 @@ namespace IRControl.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<bool>("PrimeiroAcesso")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SenhaHash")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -279,6 +314,17 @@ namespace IRControl.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Dependente");
+                });
+
+            modelBuilder.Entity("IRControl.Domain.Entities.RecuperacaoSenha", b =>
+                {
+                    b.HasOne("IRControl.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("IRControl.Domain.Entities.Dependente", b =>

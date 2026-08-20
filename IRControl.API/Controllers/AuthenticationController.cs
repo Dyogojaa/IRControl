@@ -96,7 +96,7 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> AlterarSenha(
         AlterarSenhaRequest request)
     {
-        var claimUsuarioId = User.FindFirst("sub");
+        var claimUsuarioId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier) ?? User.FindFirst("sub");
 
         if (claimUsuarioId is null)
             return Unauthorized();
@@ -115,20 +115,7 @@ public class AuthenticationController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Solicita redefinição de senha.
-    /// </summary>
-    [AllowAnonymous]
-    [HttpPost("esqueci-senha")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> EsqueciSenha(
-        EsqueciSenhaRequest request)
-    {
-        await _authenticationService.EsqueciSenhaAsync(request);
-
-        return NoContent();
-    }
-
+    
     /// <summary>
     /// Renova o token JWT.
     /// </summary>
@@ -170,5 +157,71 @@ public class AuthenticationController : ControllerBase
         await _authenticationService.LogoutAsync(usuarioId);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Solicita recuperação de senha.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("esqueci-senha")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> EsqueciSenha(
+        EsqueciSenhaRequest request)
+    {
+        try
+        {
+            await _authenticationService
+                .EsqueciSenhaAsync(request);
+
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                mensagem = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new
+            {
+                mensagem = ex.Message
+            });
+        }
+    }
+
+    /// <summary>
+    /// Redefine a senha utilizando o código de recuperação.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("redefinir-senha")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RedefinirSenha(
+        RedefinirSenhaRequest request)
+    {
+        try
+        {
+            await _authenticationService
+                .RedefinirSenhaAsync(request);
+
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                mensagem = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new
+            {
+                mensagem = ex.Message
+            });
+        }
     }
 }

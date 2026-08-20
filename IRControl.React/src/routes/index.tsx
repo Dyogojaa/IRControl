@@ -4,7 +4,9 @@ import MainLayout from "@/layouts/MainLayout";
 
 import { ProtectedRoute } from "@/auth/ProtectedRoute";
 
-import LoginPage from "@/pages/login/LoginPage";    
+import LoginPage from "@/pages/login/LoginPage";
+import CriarSenhaPage from "@/pages/CriarSenhaPage/CriarSenhaPage";
+import ConfiguracoesPage from "@/pages/ConfiguracoesPage/ConfiguracoesPage";
 
 
 import DashboardPage from "@/pages/Dashboard/DashboardPage";
@@ -13,6 +15,7 @@ import DependentesPage from "@/pages/Dependentes/DependentesPage";
 import DespesasPage from "@/pages/Despesas/DespesasPage";
 import InformesPage from "@/pages/Informes/InformesPage";
 import AuditoriaPage from "@/pages/Auditoria/AuditoriaPage";
+import RecuperarSenhaPage  from "@/pages/RecuperarSenhaPage/RecuperarSenhaPage";
 
 function AppRoutes() {
 
@@ -26,6 +29,20 @@ function AppRoutes() {
             />
 
             <Route
+                path="/recuperar-senha"
+                element={<RecuperarSenhaPage />}
+            />
+
+            <Route
+                path="/criar-senha"
+                element={
+                    <ProtectedRoute>
+                        <CriarSenhaPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
                 element={
                     <ProtectedRoute>
                         <MainLayout />
@@ -35,12 +52,22 @@ function AppRoutes() {
 
                 <Route
                     index
-                    element={<Navigate to="/dashboard" replace />}
+                    element={
+                        <Navigate
+                            to="/dashboard"
+                            replace
+                        />
+                    }
                 />
 
                 <Route
                     path="/dashboard"
                     element={<DashboardPage />}
+                />
+
+                <Route
+                    path="/configuracoes"
+                    element={<ConfiguracoesPage />}
                 />
 
                 <Route
@@ -70,7 +97,12 @@ function AppRoutes() {
 
                 <Route
                     path="*"
-                    element={<Navigate to="/dashboard" replace />}
+                    element={
+                        <Navigate
+                            to="/dashboard"
+                            replace
+                        />
+                    }
                 />
 
             </Route>
@@ -78,7 +110,6 @@ function AppRoutes() {
         </Routes>
 
     );
-
 }
 
 export default AppRoutes;

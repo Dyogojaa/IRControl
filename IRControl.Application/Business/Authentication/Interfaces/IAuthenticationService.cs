@@ -21,4 +21,8 @@ public interface IAuthenticationService
         RefreshTokenRequest request);
 
     Task LogoutAsync(Guid usuarioId);
+
+
+    Task RedefinirSenhaAsync(
+        RedefinirSenhaRequest request);
 }

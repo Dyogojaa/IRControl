@@ -1,0 +1,86 @@
+name: ircontrol
+
+services:
+
+  # =========================================================
+  # SQL SERVER
+  # =========================================================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ircontrol-sql
+    restart: always
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "Base123#@"
+
+    ports:
+      - "1434:1433"
+
+    volumes:
+      - "D:\\SQLServer\\IRControl:/var/opt/mssql/data"
+
+    networks:
+      - ircontrol-net
+
+
+  # =========================================================
+  # API
+  # =========================================================
+  api:
+    build:
+      context: D:\\IRControl\\IRControl
+      dockerfile: IRControl.API/Dockerfile
+
+    container_name: ircontrol-api
+    restart: always
+
+    depends_on:
+      sqlserver:
+        condition: service_started
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5013"
+
+      # Banco Docker será criado diretamente pelo modelo atual
+      IRCONTROL_USE_ENSURE_CREATED: "true"
+
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=IRControlDb;User Id=sa;Password=Base123#@;TrustServerCertificate=True;MultipleActiveResultSets=true"
+
+    ports:
+      - "5014:5013"
+
+    networks:
+      - ircontrol-net
+
+
+  # =========================================================
+  # FRONTEND / NGINX
+  # =========================================================
+  web:
+    build:
+      context: D:\\IRControl\\IRControl\\IRControl.React
+      dockerfile: Dockerfile
+
+    container_name: ircontrol-web
+    restart: always
+
+    depends_on:
+      api:
+        condition: service_started
+
+    ports:
+      - "3001:80"
+
+    networks:
+      - ircontrol-net
+
+
+# =========================================================
+# NETWORK
+# =========================================================
+networks:
+  ircontrol-net:
+    name: ircontrol_ircontrol-net

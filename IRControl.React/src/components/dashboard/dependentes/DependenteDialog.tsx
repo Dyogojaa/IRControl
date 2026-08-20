@@ -13,7 +13,7 @@ import {
 
 import DependenteForm from "./DependenteForm";
 
-import type { DialogMode } from "@/hooks/useDependentes";
+import type { DialogMode } from "./DependenteForm.types";
 import type {
     Dependente,
     DependenteRequest,
@@ -52,6 +52,7 @@ export default function DependenteDialog({
 
         if (dependente) {
 
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setForm({
                 nome: dependente.nome,
                 cpf: dependente.cpf,
@@ -63,6 +64,7 @@ export default function DependenteDialog({
             return;
         }
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setForm(emptyForm);
 
     }, [dependente]);

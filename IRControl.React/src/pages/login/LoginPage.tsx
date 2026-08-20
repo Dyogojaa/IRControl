@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import { Box } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 
 import LoginHero from "@/components/login/LoginHero";
@@ -13,28 +15,63 @@ export default function LoginPage() {
 
     const { login } = useAuth();
 
-    const [usuario, setUsuario] = useState("");
-    const [senha, setSenha] = useState("");
-    const [lembrarMe, setLembrarMe] = useState(false);
+    const [usuario, setUsuario] =
+        useState("");
 
-    const [loading, setLoading] = useState(false);
-    const [erro, setErro] = useState("");
+    const [senha, setSenha] =
+        useState("");
+
+    const [lembrarMe, setLembrarMe] =
+        useState(false);
+
+    const [loading, setLoading] =
+        useState(false);
+
+    const [erro, setErro] =
+        useState("");
 
     async function handleEntrar() {
 
         try {
 
             setErro("");
+
             setLoading(true);
 
-            await login(usuario, senha);
+            const primeiroAcesso =
+                await login(
+                    usuario,
+                    senha
+                );
 
-            navigate("/dashboard");
+            if (primeiroAcesso) {
+
+                navigate(
+                    "/criar-senha",
+                    {
+                        replace: true,
+                    }
+                );
+
+                return;
+            }
+
+            navigate(
+                "/dashboard",
+                {
+                    replace: true,
+                }
+            );
 
         }
-        catch {
+        catch (error) {
 
-            setErro("Usuário ou senha inválidos.");
+            if (error instanceof Error)
+                setErro(error.message);
+            else
+                setErro(
+                    "Erro ao realizar login."
+                );
 
         }
         finally {
@@ -42,7 +79,6 @@ export default function LoginPage() {
             setLoading(false);
 
         }
-
     }
 
     return (
@@ -51,28 +87,46 @@ export default function LoginPage() {
             sx={{
                 display: "flex",
                 minHeight: "100vh",
-                backgroundColor: "#F5F7FA"
+                backgroundColor: "#F5F7FA",
             }}
         >
 
             <LoginHero />
 
             <LoginCard
+
                 login={usuario}
+
                 senha={senha}
+
                 lembrarMe={lembrarMe}
+
                 loading={loading}
+
                 erro={erro}
+
                 onLoginChange={setUsuario}
+
                 onSenhaChange={setSenha}
-                onLembrarMeChange={setLembrarMe}
+
+                onLembrarMeChange={
+                    setLembrarMe
+                }
+
                 onEntrar={handleEntrar}
-                onEsqueceuSenha={() => console.log("Esqueceu senha")}
-                onSolicitarAcesso={() => console.log("Solicitar acesso")}
+
+                    onEsqueceuSenha={() =>
+                    navigate("/recuperar-senha")
+                }
+
+                onSolicitarAcesso={() =>
+                    console.log(
+                        "Solicitar acesso"
+                    )
+                }
+
             />
 
         </Box>
-
     );
-
 }

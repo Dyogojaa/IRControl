@@ -7,6 +7,7 @@ export interface AuthUser {
 export interface AuthStorageData {
     token: string;
     expiracao: string;
+    primeiroAcesso: boolean;
     usuario: AuthUser;
 }
 
@@ -15,11 +16,16 @@ const STORAGE_KEY = "ircontrol.auth";
 class AuthStorage {
 
     save(data: AuthStorageData): void {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(data)
+        );
     }
 
     load(): AuthStorageData | null {
-        const data = localStorage.getItem(STORAGE_KEY);
+
+        const data =
+            localStorage.getItem(STORAGE_KEY);
 
         if (!data)
             return null;
@@ -41,6 +47,23 @@ class AuthStorage {
 
     getUser(): AuthUser | null {
         return this.load()?.usuario ?? null;
+    }
+
+    isPrimeiroAcesso(): boolean {
+        return this.load()?.primeiroAcesso ?? false;
+    }
+
+    concluirPrimeiroAcesso(): void {
+
+        const data = this.load();
+
+        if (!data)
+            return;
+
+        this.save({
+            ...data,
+            primeiroAcesso: false,
+        });
     }
 }
 

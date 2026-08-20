@@ -23,6 +23,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Atividade> Atividades => Set<Atividade>();
 
+    public DbSet<RecuperacaoSenha> RecuperacoesSenha  => Set<RecuperacaoSenha>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

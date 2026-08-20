@@ -7,14 +7,29 @@ export interface AuthUser {
 }
 
 export interface AuthContextData {
+
     isAuthenticated: boolean;
+
     loading: boolean;
+
     user: AuthUser | null;
 
-    login(login: string, senha: string): Promise<void>;
+    primeiroAcesso: boolean;
+
+    login(
+        login: string,
+        senha: string
+    ): Promise<boolean>;
+
+    criarSenha(
+        senha: string,
+        confirmarSenha: string
+    ): Promise<void>;
+
     logout(): void;
 }
 
-export const AuthContext = createContext<AuthContextData>(
-    {} as AuthContextData
-);
+export const AuthContext =
+    createContext<AuthContextData>(
+        {} as AuthContextData
+    );

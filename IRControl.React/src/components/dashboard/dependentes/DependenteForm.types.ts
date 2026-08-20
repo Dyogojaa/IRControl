@@ -1,5 +1,6 @@
-import type { DialogMode } from "@/hooks/useDependentes";
 import type { DependenteRequest } from "@/types/dependente";
+
+export type DialogMode = "create" | "edit" | "view";
 
 export interface DependenteFormProps {
     mode: DialogMode;

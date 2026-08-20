@@ -74,16 +74,107 @@ public class AuthenticationService : IAuthenticationService
     }
 
     public async Task AlterarSenhaAsync(
-        Guid usuarioId,
-        AlterarSenhaRequest request)
+    Guid usuarioId,
+    AlterarSenhaRequest request)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(request.SenhaAtual))
+            throw new ArgumentException(
+                "Informe a senha atual.");
+
+        if (string.IsNullOrWhiteSpace(request.NovaSenha))
+            throw new ArgumentException(
+                "Informe a nova senha.");
+
+        if (string.IsNullOrWhiteSpace(request.ConfirmacaoSenha))
+            throw new ArgumentException(
+                "Confirme a nova senha.");
+
+        if (request.NovaSenha != request.ConfirmacaoSenha)
+            throw new ArgumentException(
+                "As senhas não conferem.");
+
+        if (request.NovaSenha.Length < 8)
+            throw new ArgumentException(
+                "A nova senha deve possuir pelo menos 8 caracteres.");
+
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(x => x.Id == usuarioId);
+
+        if (usuario is null)
+            throw new KeyNotFoundException(
+                "Usuário não encontrado.");
+
+        if (!usuario.Ativo)
+            throw new InvalidOperationException(
+                "Usuário inativo.");
+
+        var senhaAtualValida =
+            BCrypt.Net.BCrypt.Verify(
+                request.SenhaAtual,
+                usuario.SenhaHash);
+
+        if (!senhaAtualValida)
+            throw new ArgumentException(
+                "A senha atual está incorreta.");
+
+        usuario.SenhaHash =
+            BCrypt.Net.BCrypt.HashPassword(
+                request.NovaSenha);
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task EsqueciSenhaAsync(
-        EsqueciSenhaRequest request)
+    EsqueciSenhaRequest request)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(request.Email))
+            throw new ArgumentException(
+                "Informe o e-mail.");
+
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(x =>
+                x.Email == request.Email &&
+                x.Ativo);
+
+        if (usuario is null)
+            throw new KeyNotFoundException(
+                "Usuário não encontrado.");
+
+        var recuperacoes = await _context.RecuperacoesSenha
+            .Where(x =>
+                x.UsuarioId == usuario.Id &&
+                !x.Utilizado)
+            .ToListAsync();
+
+        foreach (var recuperacao in recuperacoes)
+        {
+            recuperacao.Utilizado = true;
+        }
+
+        var codigo =
+            Random.Shared.Next(100000, 1000000)
+                .ToString();
+
+        var recuperacaoSenha = new RecuperacaoSenha
+        {
+            Id = Guid.NewGuid(),
+
+            UsuarioId = usuario.Id,
+
+            Codigo = codigo,
+
+            Expiracao =
+                DateTime.UtcNow.AddMinutes(15),
+
+            Utilizado = false,
+
+            DataCriacao = DateTime.UtcNow,
+        };
+
+        _context.RecuperacoesSenha.Add(
+            recuperacaoSenha);
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task<LoginResponse> LoginAsync(
@@ -173,6 +264,65 @@ public class AuthenticationService : IAuthenticationService
             PrimeiroAcesso =
                 usuario.PrimeiroAcesso
         };
+    }
+
+    public async Task RedefinirSenhaAsync(
+    RedefinirSenhaRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email))
+            throw new ArgumentException(
+                "Informe o e-mail.");
+
+        if (string.IsNullOrWhiteSpace(request.Codigo))
+            throw new ArgumentException(
+                "Informe o código de recuperação.");
+
+        if (string.IsNullOrWhiteSpace(request.NovaSenha))
+            throw new ArgumentException(
+                "Informe a nova senha.");
+
+        if (request.NovaSenha.Length < 8)
+            throw new ArgumentException(
+                "A nova senha deve possuir pelo menos 8 caracteres.");
+
+        if (request.NovaSenha != request.ConfirmacaoSenha)
+            throw new ArgumentException(
+                "As senhas não conferem.");
+
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(x =>
+                x.Email == request.Email &&
+                x.Ativo);
+
+        if (usuario is null)
+            throw new KeyNotFoundException(
+                "Usuário não encontrado.");
+
+        var recuperacao = await _context.RecuperacoesSenha
+            .Where(x =>
+                x.UsuarioId == usuario.Id &&
+                x.Codigo == request.Codigo &&
+                !x.Utilizado)
+            .OrderByDescending(x => x.DataCriacao)
+            .FirstOrDefaultAsync();
+
+        if (recuperacao is null)
+            throw new ArgumentException(
+                "Código de recuperação inválido.");
+
+        if (recuperacao.Expiracao < DateTime.UtcNow)
+            throw new ArgumentException(
+                "O código de recuperação expirou.");
+
+        usuario.SenhaHash =
+            BCrypt.Net.BCrypt.HashPassword(
+                request.NovaSenha);
+
+        usuario.PrimeiroAcesso = false;
+
+        recuperacao.Utilizado = true;
+
+        await _context.SaveChangesAsync();
     }
 
     public Task LogoutAsync(Guid usuarioId)

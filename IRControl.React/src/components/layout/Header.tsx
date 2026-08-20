@@ -30,7 +30,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotifications } from "@/hooks/useNotifications";
 
-import { DRAWER_WIDTH, HEADER_HEIGHT } from "@/config/layout";
+import {
+    DRAWER_WIDTH,
+    HEADER_HEIGHT,
+} from "@/config/layout";
 
 function Header() {
 
@@ -38,7 +41,8 @@ function Header() {
 
     const { user, logout } = useAuth();
 
-    const { notifications } = useNotifications();
+    const { notifications } =
+        useNotifications();
 
     const [anchorEl, setAnchorEl] =
         useState<null | HTMLElement>(null);
@@ -72,6 +76,14 @@ function Header() {
         logout();
 
         navigate("/login");
+
+    }
+
+    function handleConfiguracoes() {
+
+        handleCloseMenu();
+
+        navigate("/configuracoes");
 
     }
 
@@ -272,7 +284,7 @@ function Header() {
                         </MenuItem>
 
                         <MenuItem
-                            onClick={handleCloseMenu}
+                            onClick={handleConfiguracoes}
                         >
 
                             <ListItemIcon>
@@ -431,7 +443,6 @@ function Header() {
         </AppBar>
 
     );
-
 }
 
 export default Header;

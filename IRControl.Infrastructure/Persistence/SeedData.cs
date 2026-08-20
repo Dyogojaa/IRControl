@@ -18,7 +18,17 @@ public static class SeedData
 
     public static async Task InitializeAsync(AppDbContext context)
     {
-        await context.Database.MigrateAsync();
+        var usarEnsureCreated =
+            Environment.GetEnvironmentVariable("IRCONTROL_USE_ENSURE_CREATED") == "true";
+
+        if (usarEnsureCreated)
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
+        else
+        {
+            await context.Database.MigrateAsync();
+        }
 
         await SeedUsuariosAsync(context);
 
